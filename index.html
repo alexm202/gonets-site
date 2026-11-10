@@ -1,0 +1,1410 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>gonets.online — мессенджеры для Битрикс24</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Caveat:wght@600;700&display=swap">
+<style>
+/* Layout: светлый лендинг — блоки «серая скруглённая панель с макетом интерфейса + зелёный заголовок и серый текст», чередуются слева/справа. Один светлый вид намеренно. */
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF; --panel:#F4F5F7; --ink:#2B2D33; --grey:#6E7178; --line:#E6E8EC;
+  --green:#4FB247; --green-d:#3C9A35; --green-l:#E4F4E1; --bubble:#6CC56A;
+  --red:#E5463B; --blue:#3AA3DD; --orange:#F09A1A;
+  --wa:#2DB742; --tg:#2AA3E0; --max:#7B5CF5; --waba:#0E8A5F;
+  --f:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --hand:"Caveat","Segoe Print",cursive;
+  --shadow:0 10px 30px rgba(30,35,45,.08),0 1px 3px rgba(30,35,45,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:17px;line-height:1.5;font-weight:500}
+h1,h2,h3{margin:0;text-wrap:balance;font-weight:800;letter-spacing:-.015em}
+p{margin:0}
+a{color:var(--green-d)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.g{color:var(--green)}
+.grey{color:var(--grey)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:#fff}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:28px;min-height:72px;flex-wrap:wrap;padding-block:8px}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);white-space:nowrap;margin-right:14px}
+.logo-ic{width:40px;height:40px;flex:none;border-radius:12px;display:block;transition:transform .2s}
+.logo:hover .logo-ic{transform:rotate(-8deg) scale(1.06)}
+.logo-t{font-weight:800;font-size:24px;letter-spacing:-.02em;color:var(--ink);line-height:1}
+.logo-t i{font-style:normal;color:var(--green)}
+nav.tabs{display:flex;gap:26px;flex:1;flex-wrap:wrap}
+nav.tabs a{color:var(--ink);text-decoration:none;font-weight:600;font-size:16px;padding-block:6px;border-bottom:2px solid transparent}
+nav.tabs a:hover{color:var(--green)}
+nav.tabs a[aria-current="page"]{color:var(--green);border-bottom-color:var(--green)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;text-decoration:none;font:inherit;font-weight:700;border-radius:14px;padding:16px 28px;background:var(--green);color:#fff;font-size:17px;transition:background .15s,transform .15s}
+.btn:hover{background:var(--green-d);transform:translateY(-1px)}
+.btn.out{background:#fff;color:var(--green);box-shadow:inset 0 0 0 2px var(--green)}
+.btn.out:hover{background:var(--green-l)}
+.btn.sm{padding:11px 18px;font-size:15px;border-radius:12px}
+:focus-visible{outline:3px solid rgba(79,178,71,.5);outline-offset:2px}
+@media (max-width:820px){.bar .btn.sm{display:none}nav.tabs{order:3;flex-basis:100%;gap:18px;overflow-x:auto;flex-wrap:nowrap}nav.tabs a{white-space:nowrap}}
+
+/* ---------- hero ---------- */
+.hero{padding-block:56px 40px}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.hero-grid>*{min-width:0}
+.hero h1{font-size:clamp(34px,4.6vw,58px);line-height:1.08}
+.hero .sub{font-size:clamp(18px,1.7vw,22px);color:var(--grey);margin-top:22px;max-width:30em}
+.cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.hint{margin-top:16px;color:var(--grey);font-size:15px}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+
+/* ---------- feature blocks ---------- */
+.feat{display:grid;grid-template-columns:1.1fr 1fr;gap:72px;align-items:center;padding-block:44px}
+.feat>*{min-width:0}
+.feat.rev .panel{order:2}
+.feat h2{color:var(--green);font-size:clamp(28px,3.3vw,46px);line-height:1.1}
+.feat .txt{display:grid;gap:20px}
+.feat .txt>p{color:var(--grey);font-size:clamp(17px,1.6vw,22px);line-height:1.45}
+.feat .kicker{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--grey)}
+.feat ul{margin:0;padding:0;list-style:none;display:grid;gap:10px;color:var(--ink);font-size:17px}
+.feat li{display:grid;grid-template-columns:22px 1fr;gap:10px}
+.feat li::before{content:"";width:18px;height:18px;margin-top:3px;border-radius:50%;background:var(--green-l) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.4l2.6 2.6L13 6.4' fill='none' stroke='%234FB247' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat}
+.panel{background:var(--panel);border-radius:56px;padding:56px 36px;min-height:400px;display:grid;place-items:center;position:relative}
+.panel>*{min-width:0;max-width:100%}
+.hand{font-family:var(--hand);color:var(--green);font-size:28px;line-height:1.05;position:absolute;pointer-events:none}
+.hand svg{display:block}
+@media (max-width:900px){
+  .feat,.feat.rev{grid-template-columns:1fr;gap:28px}
+  .feat.rev .panel{order:0}
+  .panel{border-radius:36px;padding:36px 16px;min-height:0}
+  .hand{display:none}
+}
+
+/* ---------- mock UI parts ---------- */
+.win{background:#fff;border-radius:22px;box-shadow:var(--shadow);width:100%;max-width:470px;overflow:hidden;font-size:15px}
+.win-h{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 10px;font-weight:800;font-size:18px}
+.win-h small{font-weight:600;color:var(--grey);font-size:13px}
+.search{margin:4px 20px 8px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:#A2A6AD;font-size:15px}
+.row{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:12px 20px}
+.row+.row{border-top:1px solid var(--line)}
+.ava{position:relative;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:18px}
+.ava .mb{position:absolute;right:-3px;bottom:-3px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-size:10px;color:#fff;font-weight:800}
+.mb.wa{background:var(--wa)}.mb.tg{background:var(--tg)}.mb.mx{background:var(--max)}.mb.wb{background:var(--waba)}
+.who{min-width:0}
+.who b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{display:block;color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.meta{display:grid;justify-items:end;gap:4px;color:var(--grey);font-size:13px}
+.ticks{color:var(--blue);font-weight:800;letter-spacing:-3px}
+.cnt{background:var(--red);color:#fff;border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px;font-weight:800;padding:0 6px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
+.pill.on{background:var(--green-l);color:var(--green-d)}
+.pill.warn{background:#FFF1DC;color:#B56B00}
+
+.chat{background:#fff;border-radius:22px;box-shadow:var(--shadow);width:100%;max-width:470px;padding:18px;display:grid;gap:10px;font-size:15px}
+.chat-top{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--line);font-weight:700}
+.from{font-size:12px;color:var(--grey);margin-bottom:-6px}
+.from.r{text-align:right}
+.b{max-width:82%;padding:10px 14px;border-radius:14px;box-shadow:0 1px 2px rgba(0,0,0,.06);display:grid;gap:4px}
+.b small{font-size:11px;color:var(--grey);justify-self:end}
+.b.in{background:#fff;border:1px solid var(--line)}
+.b.out{background:var(--bubble);color:#fff;justify-self:end}
+.b.out small{color:rgba(255,255,255,.85)}
+.b.lt{background:var(--green-l);justify-self:end}
+.sys{justify-self:center;font-size:12px;font-weight:700;color:var(--grey);background:var(--panel);border-radius:999px;padding:5px 12px}
+.file{display:flex;align-items:center;gap:10px}
+.file i{width:30px;height:36px;border-radius:5px;border:2px solid var(--grey);position:relative;flex:none}
+.file i::after{content:"";position:absolute;left:5px;right:5px;top:9px;height:12px;background:repeating-linear-gradient(var(--grey) 0 2px,transparent 2px 5px)}
+.wave{display:flex;align-items:center;gap:3px;height:28px}
+.wave span{width:3px;border-radius:2px;background:currentColor;opacity:.85}
+.play{width:34px;height:34px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none}
+.play::after{content:"";border-left:11px solid var(--green);border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px}
+.voice{display:flex;align-items:center;gap:10px}
+
+.card{background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:18px 20px;display:grid;gap:10px;width:100%;max-width:440px;font-size:15px}
+.card h4{margin:0;font-size:16px;font-weight:800}
+.lbl{font-size:12px;color:var(--grey);font-weight:600}
+.fld{border:1px solid var(--line);border-radius:10px;padding:9px 12px;display:grid;gap:1px}
+.fld b{font-weight:700}
+.robot{display:flex;gap:10px;align-items:center;font-weight:700}
+.robot i{width:34px;height:34px;border-radius:10px;background:var(--green-l);display:grid;place-items:center;font-style:normal;color:var(--green-d);font-weight:800;font-size:14px;flex:none}
+.stages{display:flex;gap:4px}
+.stages span{flex:1;height:30px;border-radius:7px;background:var(--panel);font-size:11px;font-weight:700;color:var(--grey);display:grid;place-items:center;text-align:center;line-height:1.1;padding:0 4px}
+.stages span.done{background:#CDEBC9;color:var(--green-d)}
+.stages span.now{background:var(--green);color:#fff}
+.order{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-weight:700}
+.order em{font-style:normal;color:var(--grey)}
+.chipm{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px 4px 4px;background:var(--panel);font-weight:700;font-size:13px}
+.chipm .mb{position:static;width:20px;height:20px;border:0}
+.res{display:flex;gap:8px;align-items:center;background:var(--green-l);color:var(--green-d);border-radius:10px;padding:9px 12px;font-weight:700;font-size:14px}
+
+.deal{background:#fff;border-radius:22px;box-shadow:var(--shadow);width:100%;max-width:500px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;font-size:14px}
+.deal>*{min-width:0}
+.deal-l{padding:18px;display:grid;gap:10px;align-content:start;border-right:1px solid var(--line)}
+.deal-r{padding:18px;background:#FAFBFC;display:grid;gap:9px;align-content:start}
+.wbtns{display:flex;flex-wrap:wrap;gap:6px}
+.wbtn{position:relative;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 4px;font-weight:700;font-size:13px;background:#fff}
+.wbtn .mb{position:static;width:20px;height:20px;border:0}
+.wbtn.hot{border-color:var(--green);background:var(--green-l)}
+.wbtn .dot{position:absolute;left:16px;top:-2px;width:9px;height:9px;border-radius:50%;background:var(--green);border:2px solid #fff}
+.wbtn .bang{position:absolute;right:-5px;top:-7px;width:16px;height:16px;border-radius:50%;background:var(--orange);color:#fff;font-size:10px;display:grid;place-items:center;font-weight:800}
+.send{justify-self:end;background:var(--green);color:#fff;border-radius:10px;padding:8px 16px;font-weight:700}
+@media (max-width:520px){.deal{grid-template-columns:1fr}.deal-l{border-right:0;border-bottom:1px solid var(--line)}}
+
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{background:var(--panel);border-radius:12px;padding:10px 12px}
+.tile b{display:block;font-size:22px;font-weight:800}
+.tile span{font-size:12px;color:var(--grey);font-weight:600}
+.limit{display:grid;gap:5px}
+.limit div{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.track{height:8px;background:var(--panel);border-radius:4px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--green);border-radius:4px}
+.track i.w{background:var(--orange)}
+.photo{border-radius:12px;height:110px;background:linear-gradient(135deg,#F7D9A8,#E8A867 55%,#B8703A);position:relative}
+.photo.v::after{content:"";position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.15)}
+.photo.v::before{content:"";position:absolute;left:50%;top:50%;margin:-8px -4px;border-left:13px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;z-index:1}
+
+/* ---------- макет чата Битрикс24 с окном «Голосовое» ---------- */
+.feat.wide{grid-template-columns:1.5fr 1fr;gap:56px}
+.feat.wide.rev{grid-template-columns:1fr 1.5fr}
+.feat.wide{padding-block:24px}
+.feat.wide .panel{padding:24px 22px;border-radius:40px}
+.feat.wide h2{font-size:clamp(26px,2.6vw,38px)}
+.feat.wide .txt{gap:16px}
+.feat.wide .txt>p{font-size:clamp(16px,1.35vw,19px)}
+.feat.wide ul{font-size:16px}
+/* компактный макет: всё на один экран */
+.feat.wide .bx{max-width:620px;font-size:12px}
+.feat.wide .bx-h{padding:9px 14px}
+.feat.wide .bx-ava{width:34px;height:34px;font-size:12px}
+.feat.wide .bx-h b{font-size:14px}
+.feat.wide .bx-h span{font-size:11px}
+.feat.wide .bx-ic svg{width:17px;height:17px}
+.feat.wide .bx-chat{min-height:280px;padding:10px 12px;gap:6px}
+.feat.wide .bx-date{font-size:11px;padding:3px 12px}
+.feat.wide .bx-m .a{width:26px;height:26px;font-size:10px}
+.feat.wide .bx-bub{padding:5px 10px;font-size:12px}
+.feat.wide .bx-bub .wave{height:22px}
+.feat.wide .bx-bub .play{width:28px;height:28px}
+.feat.wide .bx-pop{top:56px;padding:14px;gap:9px;width:60%}
+.feat.wide .bx-pop h5{font-size:14px}
+.feat.wide .bx-pop .sub{font-size:11px;margin-top:-4px}
+.feat.wide .bx-rec{grid-template-columns:50px 1fr;gap:12px}
+.feat.wide .bx-mic{width:50px;height:50px}
+.feat.wide .bx-mic svg{width:22px;height:22px}
+.feat.wide .bx-time{font-size:22px}
+.feat.wide .bx-rec p{font-size:11px}
+.feat.wide .bx-player{padding:7px 10px;font-size:11px}
+.feat.wide .bx-go,.feat.wide .bx-re{padding:8px 13px;font-size:12px}
+.feat.wide .bx-tools{padding:7px 10px}
+.feat.wide .bx-app{font-size:11px}
+.feat.wide .bx-app i{width:22px;height:22px}
+.feat.wide .bx-in1{padding:8px 12px 4px;font-size:12px}
+.feat.wide .bx-in2{padding:4px 8px 8px 12px;gap:10px}
+.feat.wide .bx-in2>svg{width:16px;height:16px}
+.feat.wide .bx-sale{font-size:11px;padding:3px 9px}
+.feat.wide .bx-in2 .bx-send{width:32px;height:32px}
+/* ещё компактнее: весь макет пропорционально */
+.feat.wide{padding-block:12px}
+.feat.wide .panel{padding:16px 18px;border-radius:32px}
+.feat.wide .bx{zoom:.82}
+.feat.wide .bx-chat{min-height:260px}
+.feat.wide h2{font-size:clamp(24px,2.3vw,34px)}
+.bx{position:relative;width:100%;max-width:680px;background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;font-size:13px;color:#333;font-weight:500}
+.bx-h{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #EDEFF2}
+.bx-ava{width:40px;height:40px;border-radius:50%;background:#5BA88A;color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.bx-h div{min-width:0}
+.bx-h b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bx-h span{color:#9AA0A8;font-size:12px}
+.bx-ic{margin-left:auto;display:flex;gap:14px;flex:none}
+.bx-ic svg{width:20px;height:20px}
+.bx-chat{background-color:#E6EDF1;background-image:radial-gradient(rgba(255,255,255,.6) 1.4px,transparent 1.6px);background-size:18px 18px;padding:14px 14px 14px;display:grid;gap:10px;min-height:340px;align-content:start}
+.bx-date{justify-self:center;background:rgba(140,150,160,.55);color:#fff;border-radius:999px;padding:4px 14px;font-size:12px}
+.bx-m{display:flex;gap:8px;align-items:flex-end;max-width:58%}
+.bx-m .a{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:700;font-size:11px}
+.bx-m .a.op{background:#fff;box-shadow:inset 0 0 0 2px #EDA33A;color:#EDA33A}
+.bx-bub{background:#fff;border-radius:12px 12px 12px 4px;padding:7px 11px;display:grid;gap:2px;box-shadow:0 1px 1px rgba(0,0,0,.05);min-width:0}
+.bx-bub .n{color:#E39A2B;font-weight:700;font-size:12px}
+.bx-bub small{justify-self:end;color:#9AA0A8;font-size:10px}
+.bx-bub.op{background:#EEF8D9}
+.bx-bub.op small::after{content:" ✓✓";color:#3AA3DD;letter-spacing:-2px}
+.bx-bub .voice{color:#4FA43E}
+.bx-bub .play{background:#4FB247}
+.bx-bub .play::after{border-left-color:#fff}
+.bx-foot{background-color:#E6EDF1;background-image:radial-gradient(rgba(255,255,255,.6) 1.4px,transparent 1.6px);background-size:18px 18px;padding:0 10px 10px}
+.bx-comp{background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(20,30,40,.08)}
+.bx-in1{display:flex;align-items:center;gap:10px;padding:12px 14px 6px;color:#A9B0B8;font-size:13px}
+.bx-in1 svg{width:18px;height:18px;flex:none}
+.bx-in1 span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bx-in2{display:flex;align-items:center;gap:12px;padding:6px 10px 10px 14px}
+.bx-in2>svg{width:18px;height:18px;flex:none}
+.bx-in2 .sp{flex:1}
+.bx-sale{display:inline-flex;align-items:center;gap:6px;border:1px solid #E1E4E8;border-radius:999px;padding:4px 10px;font-size:12px;color:#555A61;white-space:nowrap}
+.bx-sale svg{width:16px;height:16px}
+.bx-in2 .bx-send{width:38px;height:38px}
+@media (max-width:600px){.bx-in2 .opt{display:none}}
+.bx-tools{display:flex;gap:4px;padding:10px 12px;border-bottom:1px solid #EDEFF2;overflow:hidden}
+.bx-app{display:flex;align-items:center;gap:6px;padding:4px 11px 4px 4px;border-radius:999px;font-size:12px;white-space:nowrap;border:1.5px solid transparent;flex:none}
+.bx-app i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none}
+.bx-app i svg{width:13px;height:13px}
+.bx-app.on{border-color:#2F6FE0}
+.bx-input{display:flex;align-items:center;gap:10px;padding:8px 14px 12px;color:#A9B0B8;font-size:13px}
+.bx-input span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bx-send{width:34px;height:34px;border-radius:50%;background:#3E8BF0;display:grid;place-items:center;flex:none}
+.bx-pop{position:absolute;right:12px;top:70px;width:62%;background:#fff;box-shadow:0 14px 40px rgba(20,30,40,.2);border-radius:4px;padding:18px;display:grid;gap:12px}
+.bx-pop h5{margin:0;font-size:16px;font-weight:800;display:flex;gap:8px;align-items:center}
+.bx-pop .sub{color:#6E7178;font-size:12px;margin-top:-6px}
+.bx-rec{display:grid;grid-template-columns:62px 1fr;gap:14px;align-items:center}
+.bx-mic{width:62px;height:62px;border-radius:50%;background:#D9534F;display:grid;place-items:center;box-shadow:0 6px 14px rgba(217,83,79,.35)}
+.bx-time{font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.bx-rec p{color:#6E7178;font-size:12px;margin-top:4px}
+.bx-prog{height:6px;border-radius:3px;background:#E3E6EA;margin-top:7px;width:80%}
+.bx-player{background:#7A7D82;border-radius:10px;color:#fff;display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:12px;font-variant-numeric:tabular-nums}
+.bx-player .tr{flex:1;height:4px;border-radius:2px;background:#A3A6AA;position:relative;min-width:30px}
+.bx-player .tr::before{content:"";position:absolute;left:0;top:-4px;width:12px;height:12px;border-radius:50%;background:#fff}
+.bx-player svg{width:16px;height:16px;flex:none}
+.bx-btns{display:flex;gap:8px;flex-wrap:wrap}
+.bx-go{background:#5BC0F0;color:#fff;font-weight:700;border-radius:8px;padding:10px 16px}
+.bx-re{border:1px solid #D5D9DE;border-radius:8px;padding:10px 16px;font-weight:700}
+@media (max-width:1100px){.feat.wide,.feat.wide.rev{grid-template-columns:1fr;gap:28px}.feat.wide.rev .panel{order:0}}
+@media (max-width:600px){.bx-pop{left:10px;right:10px;width:auto;top:64px}.bx-m{max-width:85%}.bx-ic{display:none}.bx-chat{min-height:400px}}
+
+/* ---------- макет раздела «Клиент» в сделке Битрикс24 ---------- */
+.dc{background:#F5F7F9;border-radius:22px;box-shadow:var(--shadow);width:100%;max-width:460px;padding:20px 22px;display:grid;gap:12px;color:#333;font-weight:500;font-size:14px}
+.dc-h{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #E1E5EA}
+.dc-h b{font-size:13px;font-weight:700;letter-spacing:.03em;color:#525C69}
+.dc-h span{color:#9AA0A8;font-size:14px}
+.dc-l{color:#9AA0A8;font-size:14px;display:flex;align-items:center;gap:6px}
+.dc-q{width:16px;height:16px;border-radius:50%;background:#B4BAC2;color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
+.dc-c{background:#fff;border:1px solid #E6E9ED;border-radius:14px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:-4px}
+.dc-c>div:first-child{min-width:0}
+.dc-name{font-size:18px;color:#333;font-weight:500}
+.dc-ph{color:#9AA0A8;font-size:15px;font-variant-numeric:tabular-nums}
+.dc-ic{display:flex;gap:16px;flex:none}
+.dc-ic svg{width:22px;height:22px}
+.dc-w{background:#fff;border-radius:10px;padding:8px;display:flex;gap:6px;flex-wrap:wrap;margin-top:-4px}
+.dc-b{display:inline-flex;align-items:center;gap:8px;border:1px solid #DCE0E5;background:#F1F3F5;border-radius:999px;padding:4px 14px 4px 4px;font-weight:700;color:#8A9099;font-size:15px}
+.dc-b i{width:28px;height:28px;border-radius:50%;background:#B4BAC2;display:grid;place-items:center;flex:none}
+.dc-b i svg{width:16px;height:16px}
+.dc-b.plus{width:38px;height:38px;padding:0;justify-content:center;font-size:20px;color:#7A818B}
+.dc-b.on{background:#fff;border:2px solid #5CC65A;color:#2F3A45;box-shadow:0 0 0 3px #E4F6E2}
+.dc-b.on i{background:#4FC34C}
+.dc-f{display:flex;gap:18px;align-items:center;flex-wrap:wrap;color:#7A818B;font-size:14px;padding-top:4px}
+.dc-f span{display:inline-flex;align-items:center;gap:4px}
+.dc-f .u{border-bottom:1px dashed #9AA0A8}
+@media (max-width:520px){.dc-b{font-size:13px;padding-right:10px}.dc-ic{gap:10px}}
+
+/* ---------- макет окна Битрикс24 Маркет ---------- */
+.mk{position:relative;width:100%;max-width:640px;height:380px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:grid;grid-template-columns:36px 1fr 36px;background:#3B6CD4}
+.mk-l,.mk-r{background:linear-gradient(#3F7ADB,#2C57BD);display:flex;flex-direction:column;align-items:center;gap:13px;padding:8px 0;overflow:hidden}
+.mk-x{width:28px;height:24px;border-radius:9px;background:#5CB8F0;color:#fff;display:grid;place-items:center;font-size:16px;line-height:1;margin-bottom:2px}
+.mk-l i{width:13px;height:12px;border-radius:3px;background:rgba(255,255,255,.78);flex:none}
+.mk-r .q{width:14px;height:14px;border-radius:50%;background:#fff;color:#2C57BD;font-size:10px;font-weight:800;font-style:normal;display:grid;place-items:center;margin:4px 0 6px}
+.mk-r span{width:17px;height:17px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.mk-c{background:#F6F8FA;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.mk-top{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff}
+.mk-logo{display:flex;align-items:center;gap:5px;font-weight:800;font-size:14px;color:#2B2D33;flex:none}
+.mk-cat{background:#5CB8F0;color:#fff;font-size:9px;font-weight:700;padding:5px 10px;border-radius:3px;flex:none}
+.mk-search{flex:1;height:20px;border:1px solid #DDE2E8;border-radius:999px;min-width:30px}
+.mk-dots{position:relative;color:#9AA0A8;font-size:11px;letter-spacing:1px;flex:none}
+.mk-dots b{position:absolute;right:-12px;top:-9px;background:#E5463B;color:#fff;font-size:8px;border-radius:999px;padding:1px 4px;letter-spacing:0}
+.mk-body{padding:14px 16px;display:grid;gap:12px;align-content:start}
+.mk-title{width:120px;height:6px;border-radius:3px;background:#B8BDC4}
+.mk-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 12px}
+.mk-card .img{height:62px;border-radius:4px;position:relative;box-shadow:0 2px 8px rgba(40,60,90,.06)}
+.mk-card .img::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px;border-radius:5px;background:rgba(255,255,255,.55)}
+.mk-card .tag{position:absolute;left:-3px;bottom:5px;width:27px;height:7px;border-radius:1px}
+.mk-card .ln{height:4px;border-radius:2px;background:#E1E4E8;margin-top:6px}
+.mk-card .st{font-size:6px;color:#C3C8CF;margin-top:5px;display:flex;align-items:center;gap:6px;letter-spacing:1px}
+.mk-card .st span{flex:1;height:2px;background:#E1E4E8;max-width:30px}
+.mk-badge{position:absolute;right:52px;bottom:22px;background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(20,40,80,.22);padding:12px 16px;display:grid;gap:4px;max-width:260px}
+@media (max-width:600px){.mk{grid-template-columns:30px 1fr;height:340px}.mk-r{display:none}.mk-opt{display:none}.mk-badge{right:12px;bottom:12px;left:42px}.mk-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.mk-card:nth-child(n+10){display:none}}
+
+/* ---------- главная: плитки мессенджеров и карточки сообщений ---------- */
+.hero-card{width:100%;max-width:560px;justify-self:center;border-radius:40px;overflow:hidden;box-shadow:0 20px 50px rgba(30,40,60,.14)}
+.hero-card img{display:block;width:100%;height:auto}
+.orb{position:relative;width:100%;max-width:600px;aspect-ratio:1.3;container-type:inline-size;justify-self:center;background:radial-gradient(closest-side,#F3F4F6,transparent)}
+.orb .app{position:absolute;aspect-ratio:1;border-radius:24%;display:grid;place-items:center;box-shadow:0 14px 30px rgba(30,40,60,.16);z-index:2}
+.orb .app svg{width:58%;height:58%}
+.orb .app.big{z-index:3;box-shadow:0 18px 40px rgba(70,80,220,.3)}
+.orb .app b{color:var(--green);font-weight:800;font-size:4.6cqw}
+.ncard{position:absolute;z-index:1;background:#fff;border-radius:3.6cqw;box-shadow:0 12px 34px rgba(30,40,60,.1);padding:2.6cqw 3cqw;display:grid;grid-template-columns:auto 1fr;gap:2.4cqw;align-items:start}
+.ncard .mini{width:6cqw;height:6cqw;border-radius:1.6cqw;display:grid;place-items:center;margin-top:.4cqw}
+.ncard .mini svg{width:66%;height:66%}
+.ncard div{min-width:0}
+.ncard b{display:block;font-size:max(11px,3.2cqw);font-weight:700}
+.ncard span:not(.mini){display:block;color:var(--grey);font-size:max(10px,2.8cqw);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ncard time{position:absolute;right:3cqw;top:2.2cqw;color:#A3A8B0;font-size:max(9px,2.3cqw)}
+
+/* ---------- макет настроек робота Битрикс24 ---------- */
+.rfw{position:relative;width:100%;max-width:560px;padding-top:34px}
+.rf{background:#fff;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;color:#333;font-weight:500;zoom:.86}
+.rf-body{background:#EEF2F4;margin:10px 10px 0;border-radius:8px;padding:16px 18px 18px;display:grid;justify-items:start;gap:5px}
+.rf-title{font-weight:800;font-size:15px;margin-bottom:6px}
+.rf label{color:#80868E;font-size:13px;margin-top:6px}
+.rf .sel{display:inline-flex;align-items:center;gap:22px;background:#fff;border:1px solid #CFD4DA;border-radius:6px;padding:8px 12px;font-size:14px;min-width:150px;justify-content:space-between}
+.rf .sel::after{content:"";width:7px;height:7px;border-right:2px solid #535C69;border-bottom:2px solid #535C69;transform:rotate(45deg) translateY(-3px)}
+.rf .sel.w{min-width:min(100%,360px)}
+.rf-row{display:flex;align-items:center;gap:10px;width:100%}
+.rf .inp{flex:1;min-width:0;background:#fff;border:1px solid #CFD4DA;border-radius:6px;padding:8px 12px;font-size:14px;box-shadow:0 0 0 3px rgba(79,178,71,.25);border-color:#8FCB89}
+.rf .dots{color:#A9AFB6;letter-spacing:1px}
+.rf .ppl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;background:#fff;border:1px solid #CFD4DA;border-radius:8px;padding:6px 8px}
+.rf .chipu{display:inline-flex;align-items:center;gap:6px;background:#C8EAF8;color:#2066B0;border-radius:6px;padding:3px 8px 3px 3px;font-size:14px}
+.rf .chipu i{width:22px;height:22px;border-radius:50%;background:#8A98AD;color:#fff;font-style:normal;font-size:9px;font-weight:700;display:grid;place-items:center}
+.rf .chipu em{font-style:normal;color:#9DB3C6;margin-left:4px}
+.rf .add{color:#2066B0;font-size:14px}
+.rf-foot{display:flex;justify-content:center;gap:22px;align-items:center;padding:14px}
+.rf-foot .save{background:#C6EA51;color:#535C69;font-weight:800;text-transform:uppercase;font-size:13px;padding:11px 22px;border-radius:3px;letter-spacing:.03em}
+.rf-foot .cancel{color:#535C69;font-weight:800;text-transform:uppercase;font-size:13px;letter-spacing:.03em}
+.rf-msg{position:absolute;right:-6px;top:0;max-width:62%;background:#fff;border-radius:16px 16px 4px 16px;box-shadow:0 14px 34px rgba(30,40,60,.18);padding:10px 14px;display:grid;gap:2px;font-size:14px;transform:rotate(2deg);z-index:2}
+.rf-msg mark{background:#DDF3C4;color:inherit;border-radius:4px;padding:0 3px}
+@media (max-width:600px){.rf{zoom:.8}.rf-msg{position:static;max-width:100%;transform:none;margin-bottom:12px}.rfw{padding-top:0}}
+
+/* иконка Max */
+.ic-max{background:#6A4CF0 url("data:image/jpeg;base64,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") center/108% no-repeat!important}
+.mb.mx.ic-max,.mb.mx{background:#6A4CF0 url("data:image/jpeg;base64,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") center/112% no-repeat;color:transparent!important}
+html{scroll-behavior:smooth}
+.anchor{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 84px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.rf .sel.focus{border:2px solid #6DA2EC;box-shadow:0 0 0 2px #DCE9FB}
+.rf .ta{flex:1;min-width:0;background:#fff;border:1px solid #CFD4DA;border-radius:6px;padding:8px 12px;font-size:14px;min-height:70px;position:relative;line-height:1.4}
+.rf .ta::after{content:"";position:absolute;right:4px;bottom:4px;width:8px;height:8px;background:linear-gradient(135deg,transparent 45%,#9AA0A8 45% 55%,transparent 55% 70%,#9AA0A8 70% 80%,transparent 80%)}
+.rf .inp.plain{box-shadow:none;border-color:#CFD4DA;min-height:36px;color:#2066B0}
+.rf-msg.out{background:#E4F4E1;border-radius:16px 16px 16px 4px}
+/* ---------- макеты экранов приложения: статистика, уведомления, виджет ---------- */
+.ap{background:#fff;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;color:#2B2D33;font-weight:500;width:100%;max-width:640px;zoom:.84}
+.ap-tabs{display:flex;gap:26px;padding:0 20px;border-bottom:1px solid #E6E8EC}
+.ap-tabs span{padding:13px 2px 11px;color:#6E7178;font-weight:700;font-size:15px;border-bottom:3px solid transparent}
+.ap-tabs span.on{color:#2B2D33;border-color:#5CC0EF}
+.ap-in{padding:16px 18px;display:grid;gap:12px}
+.ap-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ap-sel{border:1px solid #DCE0E5;border-radius:8px;padding:6px 30px 6px 12px;font-size:14px;position:relative}
+.ap-sel::after{content:"⌃⌄";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:9px;line-height:.6;writing-mode:vertical-lr;color:#535C69}
+.seg{display:inline-flex;border:1px solid #DCE0E5;border-radius:10px;overflow:hidden;background:#fff}
+.seg button{all:unset;cursor:pointer;padding:7px 13px;font-weight:700;font-size:13px;color:#525C69;border-right:1px solid #E6E8EC}
+.seg button:last-child{border-right:0}
+.seg button.on{background:#5CC0EF;color:#fff}
+.seg button:focus-visible{outline:2px solid #5CC0EF;outline-offset:-2px}
+.st5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.st5>div{border:1px solid #E6E8EC;border-radius:12px;padding:9px 11px;display:grid;gap:1px;min-width:0}
+.st5 span{font-size:12px;color:#6E7178;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st5 b{font-size:22px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap}
+.st5 small{font-size:11px;color:#6E7178;line-height:1.25}
+.st5 .warn b{color:var(--red)}
+.hm-h{font-size:14px;color:#6E7178}.hm-h b{color:#2B2D33}
+.hm{display:grid;grid-template-columns:38px repeat(7,minmax(0,1fr));gap:3px 4px;font-size:11px;color:#6E7178;align-items:center}
+.hm .bar{background:#5CC0EF;border-radius:3px 3px 0 0;align-self:end}
+.hm .c{height:10px;border-radius:3px}
+.hm .hl{font-variant-numeric:tabular-nums}
+.hm .dl{text-align:center;line-height:1.2;margin-top:4px}
+.hm .we{font-weight:800;color:#2B2D33}
+.hm-leg{font-size:12px;color:#6E7178;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.hm-leg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.ap-set{grid-template-columns:140px minmax(0,1fr);align-items:start;gap:14px}
+.ap-menu{border:1px solid #E6E8EC;border-radius:12px;padding:6px;display:grid;gap:2px}
+.ap-menu span{padding:8px 11px;border-radius:8px;font-weight:600;font-size:14px}
+.ap-menu span.on{background:#E6F5FC}
+.ap-card{border:1px solid #E6E8EC;border-radius:12px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.ap-card h5{margin:0;font-size:16px;font-weight:800;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ap-card h5 small{font-size:12px;font-weight:700}
+.ap-card .d{color:#6E7178;font-size:13px}
+.tg-row{display:grid;grid-template-columns:42px 1fr;gap:10px;padding:8px 0 2px;border-top:1px solid #EDEFF2}
+.tgl{width:38px;height:21px;border-radius:999px;background:#5BA65B;position:relative;margin-top:1px}
+.tgl::after{content:"";position:absolute;right:3px;top:3px;width:15px;height:15px;border-radius:50%;background:#fff}
+.tg-row b{display:block;font-size:14px;color:#525C69}
+.tg-row span{display:block;font-size:12px;color:#7A818B;line-height:1.35}
+.ws-row{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;font-size:13px;color:#6E7178}
+.sl{display:flex;align-items:center;gap:10px}
+.sl input{flex:1;min-width:60px;accent-color:#5CC0EF}
+.sl b{color:#6E7178;font-size:15px;white-space:nowrap}
+.pv{background:#F4F5F7;border:1px solid #E6E8EC;border-radius:12px;padding:10px 12px;display:grid;gap:8px}
+.pv small{color:#6E7178;font-size:12px}
+.pv-in{background:#fff;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:62px}
+.wbx{position:relative;display:inline-flex;align-items:center;justify-content:center;color:#fff;flex:none;transition:all .2s}
+.wbx.plus{background:#F4F5F7;border:1px solid #DCE0E5;color:#7A818B;font-weight:600}
+.wbx.ring{box-shadow:0 0 0 2px #fff,0 0 0 4px color-mix(in srgb,var(--rc) 35%,#fff)}
+.wbx.lab{background:#F1F3F5;border:1px solid #DCE0E5;color:#525C69;font-weight:700;gap:8px;padding:0 14px 0 3px}
+.wbx.lab.ring{background:#fff;border-color:var(--rc)}
+.wbx .ic{display:grid;place-items:center}
+.wbx .dot{position:absolute;right:-2px;top:-2px;width:10px;height:10px;border-radius:50%;background:#4FB247;border:2px solid #fff}
+.ws-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ws-foot .go{background:#5CC0EF;color:#fff;font-weight:700;border-radius:10px;padding:8px 16px}
+.ws-foot .re{border:1px solid #DCE0E5;border-radius:10px;padding:8px 16px;font-weight:700}
+.ws-foot small{color:#6E7178;font-size:13px}
+@media (max-width:600px){.ap{zoom:.72}.ap-set{grid-template-columns:1fr}.ap-menu{display:none}.st5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* ---------- макеты: экран «Номера» и напоминание об оплате ---------- */
+.plan .p .pm{display:block;font-size:16px;font-weight:600;color:var(--grey);margin-top:6px}
+.wpair{position:relative;width:100%;max-width:640px;padding-bottom:150px}
+.wpair .wp-card{zoom:.88;max-width:460px;margin-left:auto}
+.wpair .wp-card .pv-in{min-height:0;padding:8px}
+.wpair .wp-set{position:absolute;left:0;bottom:0;width:390px;max-width:none;zoom:.8;box-shadow:0 24px 60px rgba(30,40,60,.28);z-index:2}
+.wpair .wp-set .ap-in{padding:12px}
+.wpair .ws-row{grid-template-columns:56px 1fr}
+@media (max-width:700px){.wpair{padding-bottom:0}.wpair .wp-card{margin:0 auto}.wpair .wp-set{position:relative;margin:-40px auto 0;width:100%}}
+.rep-w{max-width:720px;padding:0 0 64px}
+.rep-img{max-width:none;width:100%}
+.rep-shot{display:block;width:100%;height:auto;border-radius:22px;background:#fff;box-shadow:0 18px 50px rgba(30,40,60,.14)}
+.rep-img .rf-msg{max-width:46%}
+.rep-w .rf-msg{top:auto;bottom:0;right:-8px;max-width:58%;transform:rotate(-1.5deg)}
+.rep-w .ap{max-width:780px}
+.rep-w .nm-r{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,.95fr) auto;gap:14px}
+.rep-w .nm-c{flex-wrap:nowrap;gap:6px;white-space:nowrap;font-size:11px}
+.rep-w .nm-c em{font-size:11px}
+.nm-info{border:1px solid #E6E8EC;border-radius:12px;padding:9px 12px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px}
+.nm-ii{width:18px;height:18px;border-radius:4px;background:#6C9BD2;color:#fff;font-size:12px;display:grid;place-items:center;font-weight:800}
+.nm-dd{width:28px;height:28px;border-radius:8px;background:#F4F5F7;display:grid;place-items:center;font-size:11px;flex:none}
+.nm-xx{color:#6E7178;font-size:18px;padding:0 4px}
+.nm-x{display:flex;align-items:center;gap:10px;color:#6E7178;font-size:16px}
+.nm-g{width:30px;height:30px;border:1px solid #DCE0E5;border-radius:9px;display:grid;place-items:center}
+.nm-g svg{width:15px;height:15px}
+.nm-ok{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+.nm-ok i{width:11px;height:11px;border-radius:50%;background:#4FB247}
+.nm{border:1px solid #E6E8EC;border-radius:14px;padding:12px 14px;display:grid}
+.nm-h{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid #EDEFF2;flex-wrap:wrap}
+.nm-ph{width:34px;height:34px;border-radius:10px;background:#F4F5F7;display:grid;place-items:center;flex:none}
+.nm-ph svg{width:20px;height:20px}
+.nm-h div{flex:1;min-width:140px}
+.nm-h b{display:block;font-size:16px;font-weight:800}
+.nm-h div span{font-size:12px;color:#6E7178}
+.nm-btn{border:1px solid #DCE0E5;border-radius:10px;padding:6px 11px;font-weight:700;font-size:13px;white-space:nowrap}
+.nm-r{display:grid;grid-template-columns:1.1fr 1fr 1fr auto;gap:16px;align-items:center;padding:11px 0;border-bottom:1px solid #EDEFF2}
+.nm-r>*{min-width:0}
+.nm-a>div{display:flex;align-items:center;gap:8px}
+.nm-a .mb{position:static;width:22px;height:22px;border:0;border-radius:6px}
+.nm-a b{font-size:15px}
+.nm-a .pill{font-size:11px;padding:2px 8px}
+.who2{display:block;font-size:12px;color:#6E7178;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who2 b{color:#2B2D33;font-size:12px}
+.nm-s{display:grid;gap:5px}
+.nm-c{display:flex;align-items:center;gap:10px;font-size:12px;color:#6E7178;flex-wrap:wrap}
+.nm-c em{font-style:normal;font-weight:800;color:#2B2D33;font-variant-numeric:tabular-nums}
+.nm-c em i{font-style:normal;font-size:8px;background:#7A9CC6;color:#fff;border-radius:3px;padding:1px 3px;vertical-align:2px}
+.nm-c b{margin-left:auto;font-size:12px}
+.nm-s small{font-size:11px;color:#6E7178}
+.rep{position:relative;height:8px;border-radius:4px;background:#E6E8EC}
+.rep i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.rep u{position:absolute;left:70%;top:-3px;bottom:-3px;width:2px;background:#535C69;border-radius:1px}
+.rep-sc{display:flex;justify-content:space-between}
+.rep-sc span:nth-child(2){margin-left:40%}
+.nm-add{display:inline-flex;align-items:center;gap:8px;border:1px solid #DCE0E5;border-radius:12px;padding:6px 14px 6px 6px;font-weight:700;margin-top:10px;justify-self:start}
+.nm-add .mb{position:static;width:26px;height:26px;border:0;border-radius:8px}
+.bx-sys{background:rgba(255,255,255,.75);border-radius:12px;padding:10px 14px;display:grid;gap:4px;margin:6px 8% 0;font-size:13px}
+.bx-sys span{display:flex;gap:8px;align-items:flex-start}
+.bx-sys svg{flex:none;margin-top:1px}
+.bx-sys small{justify-self:end;color:#9AA0A8;font-size:10px}
+@media (max-width:600px){.nm-r{grid-template-columns:1fr}.bx-sys{margin:6px 0 0}}
+/* ---------- sections ---------- */
+section{padding-block:56px}
+.center{text-align:center;display:grid;justify-items:center;gap:16px;margin-bottom:36px}
+.center h2,.h2{font-size:clamp(28px,3.3vw,46px);line-height:1.1}
+.center p{color:var(--grey);font-size:20px;max-width:40em}
+.why{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.why>div{background:var(--panel);border-radius:32px;padding:30px 26px;display:grid;gap:10px;align-content:start}
+.why b.big{font-size:36px;font-weight:800;color:var(--green);line-height:1}
+.why h3{font-size:20px}
+.why p{color:var(--grey);font-size:16px}
+@media (max-width:980px){.why{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.why{grid-template-columns:1fr}}
+.page-head{padding-block:56px 12px}
+.page-head h1,.page-head h2{font-size:clamp(34px,4.4vw,56px);line-height:1.08;color:var(--green)}
+.page-head p{color:var(--grey);font-size:21px;margin-top:16px;max-width:38em}
+
+/* price */
+.price-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:28px;align-items:start}
+.price-grid>*{min-width:0}
+.plan{border:2px solid var(--green);border-radius:36px;padding:34px;display:grid;gap:18px}
+.plan .p{font-size:46px;font-weight:800;line-height:1}
+.plan .p small{font-size:17px;color:var(--grey);font-weight:600}
+.costs{background:var(--panel);border-radius:36px;padding:14px 28px}
+.costs>div{display:grid;grid-template-columns:1fr auto;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.costs>div:last-child{border-bottom:0}
+.costs span{display:block;color:var(--grey);font-size:15px}
+.costs strong{white-space:nowrap;font-size:17px}
+@media (max-width:900px){.price-grid{grid-template-columns:1fr}}
+.calc{display:grid;grid-template-columns:320px 1fr;background:var(--panel);border-radius:40px;overflow:hidden}
+.calc>*{min-width:0}
+.calc-in{padding:32px;display:grid;gap:24px;align-content:start}
+.calc-in label.t{font-weight:700;display:flex;justify-content:space-between}
+.calc-in output{color:var(--green);font-weight:800;font-size:22px}
+input[type=range]{width:100%;accent-color:var(--green)}
+.checks{display:grid;gap:10px}
+.checks label{display:flex;gap:10px;align-items:center;cursor:pointer;font-weight:600}
+.checks input{width:19px;height:19px;accent-color:var(--green)}
+.checks .mb{position:static;width:22px;height:22px;border:0}
+.calc-out{background:#fff;margin:12px;border-radius:30px;padding:28px;display:grid;gap:14px;align-content:start}
+.barrow{display:grid;grid-template-columns:150px 1fr 130px;gap:12px;align-items:center;font-weight:600}
+.barrow .tr{height:30px;background:var(--panel);border-radius:9px;overflow:hidden}
+.barrow .fl{height:100%;background:#C9CCD2;border-radius:9px;transition:width .35s}
+.barrow.us{font-weight:800}
+.barrow.us .fl{background:var(--green)}
+.barrow .v{text-align:right;font-variant-numeric:tabular-nums}
+.save{background:var(--green-l);border-radius:18px;padding:18px 20px;display:grid;gap:4px}
+.save b{font-size:28px;font-weight:800;color:var(--green-d)}
+@media (max-width:820px){.calc{grid-template-columns:1fr;border-radius:30px}.barrow{grid-template-columns:96px 1fr 100px;font-size:14px}}
+.tbl{overflow-x:auto;border-radius:28px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:16px}
+th,td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+thead th{background:var(--panel);color:var(--grey);font-weight:700;font-size:15px}
+thead th.us{background:var(--green);color:#fff}
+td.us{background:#F3FAF2;font-weight:700}
+td.rh{font-weight:700;width:22%}
+.yes{color:var(--green-d)}
+.cfg{display:grid;grid-template-columns:auto auto auto 1fr;gap:16px;align-items:stretch;margin-bottom:18px}
+.stp{background:var(--panel);border-radius:24px;padding:16px 20px;display:grid;gap:8px;font-weight:700}
+.stp small{color:var(--grey);font-weight:600;font-size:13px}
+.stp-in{display:flex;align-items:center;gap:6px}
+.stp-in input{width:76px;height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;font:800 22px Manrope,system-ui,sans-serif;color:#2B2D33;-moz-appearance:textfield}
+.stp-in input::-webkit-inner-spin-button,.stp-in input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.stp-in button{all:unset;cursor:pointer;width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:22px;font-weight:700;color:var(--green-d)}
+.stp-in button:hover{border-color:var(--green)}
+.stp-in button:focus-visible,.stp-in input:focus-visible,.tsel:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.cfg-sum{background:var(--green-l);border-radius:24px;padding:16px 22px;display:grid;gap:2px;align-content:center;color:var(--grey);font-weight:600}
+.cfg-sum b{font-size:28px;font-weight:800;color:var(--green-d)}
+@media (max-width:1100px){.cfg{grid-template-columns:1fr 1fr 1fr}.cfg-sum{grid-column:1/-1}}
+@media (max-width:820px){.cfg{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.cfg{grid-template-columns:1fr}}
+.cmp th{vertical-align:top}
+.th-s{display:block;font-size:13px;font-weight:600;opacity:.85;margin-top:8px;padding:7px 0}
+.tsel{display:block;margin-top:8px;width:100%;max-width:170px;font:700 14px Manrope,system-ui,sans-serif;color:#2B2D33;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 8px;cursor:pointer}
+.mk-chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.mk-chk input{width:19px;height:19px;margin-top:2px;flex:none;accent-color:var(--green);cursor:pointer}
+.mk-chk small{display:block;font-size:12px;font-weight:600;color:var(--grey);margin-top:3px}
+.cmp tr.sum td{background:#FAFAFB;border-top:2px solid var(--line)}
+.cmp tr.sum td.us{background:#E6F5E3}
+.big2{display:block;font-size:20px;font-weight:800}
+.cmp .up{color:var(--red);font-weight:700;font-size:13px;white-space:nowrap}
+.mk-note{display:block;margin-top:4px;font-size:12px;font-weight:700;color:var(--red)}
+.mk-note.ok{color:var(--green-d)}
+.cmp .dn{color:var(--green-d);font-weight:700;font-size:13px;white-space:nowrap}
+.cmp td.us .big2{color:var(--green-d)}
+.fine{font-size:13px;color:var(--grey);margin-top:14px;max-width:95ch}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.two>div{background:var(--panel);border-radius:32px;padding:30px;display:grid;gap:10px}
+.two p{color:var(--grey)}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+
+/* integrations */
+.crm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.crm-c{border:1px solid var(--line);border-radius:32px;padding:28px;display:grid;gap:14px;align-content:start;justify-items:start}
+.crm-c.ok{background:var(--green-l);border-color:transparent}
+.crm-c.soon{background:var(--panel);border-color:transparent}
+.crm-c.soon .crm-logo{opacity:.55}
+.crm-logo{font-size:34px;letter-spacing:-.02em;line-height:1}
+.crm-logo b{font-weight:800}
+.crm-c p{color:var(--grey);font-size:16px}
+.crm-st{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 14px;font-weight:800;font-size:14px;background:#fff;color:#6E7178}
+.crm-c.ok .crm-st{background:var(--green);color:#fff}
+.crm-st i{width:16px;height:16px;border-radius:50%;background:#fff;position:relative}
+.crm-st i::after{content:"";position:absolute;left:5px;top:2.5px;width:4px;height:8px;border:solid var(--green);border-width:0 2px 2px 0;transform:rotate(45deg)}
+@media (max-width:700px){.crm{grid-template-columns:1fr}}
+.wiz{background:var(--panel);border-radius:36px;padding:20px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;grid-template-rows:auto auto minmax(0,1fr) auto;height:min(calc(100svh - 100px),900px);min-height:560px;box-sizing:border-box}
+.wiz-secs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.wiz-secs button{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:8px 10px;font-weight:700;font-size:13.5px;line-height:1.2;color:#6E7178;border:1px solid transparent}
+.wiz-secs button i{font-style:normal;flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;background:#F1F3F5;color:#6E7178}
+.wiz-secs button.done{color:#2B2D33}
+.wiz-secs button.done i{background:var(--green-l);color:var(--green-d)}
+.wiz-secs button.on{color:#2B2D33;border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+.wiz-secs button.on i{background:var(--green);color:#fff}
+.wiz-top{display:flex;align-items:center;gap:14px;padding:0 4px}
+.wiz-top span{color:var(--grey);font-weight:700;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap}
+.wiz-dots{display:flex;gap:6px;flex:none}
+.wiz-dots button{all:unset;cursor:pointer;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;background:#fff;color:#6E7178}
+.wiz-dots button.done{background:var(--green-l);color:var(--green-d)}
+.wiz-dots button.on{background:var(--green);color:#fff}
+.wiz-bar{flex:1;min-width:60px;height:6px;border-radius:3px;background:#E2E5E9;overflow:hidden}
+.wiz-bar i{display:block;height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+.wiz-secs button:focus-visible,.wiz-dots button:focus-visible,.wiz-nav button:focus-visible,.wiz-rw:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.wiz-body{background:#fff;border-radius:28px;padding:24px;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:24px;min-height:0}
+.wiz-txt{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto;padding-right:4px}
+.wiz-k{color:var(--green-d);font-weight:800;font-size:14px}
+.wiz-txt h3{font-size:clamp(22px,2vw,28px);line-height:1.2;margin:0}
+.wiz-d{display:grid;gap:12px;font-size:16px;line-height:1.5}
+.wiz-d ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.wiz-d code{font:600 13.5px ui-monospace,SFMono-Regular,Menlo,monospace;background:#EDEFF1;border-radius:6px;padding:2px 6px;overflow-wrap:anywhere}
+.wiz-d li code{display:inline-block;margin-top:4px}
+.wiz-rw{justify-self:start;display:inline-flex;align-items:center;gap:8px;background:#13111C;color:#fff;border-radius:12px;padding:11px 18px;font-weight:800;font-size:15px;text-decoration:none}
+.wiz-rw:hover{background:#2A2638}
+.wiz-cpl{list-style:none;margin:0;padding:0!important;display:grid;gap:4px!important;max-width:400px}
+.wiz-cpl li{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border:1px solid #E6E8EC;border-radius:10px;padding:4px 4px 4px 10px;font-size:14px;line-height:1.3;transition:background .2s,border-color .2s}
+.wiz-cpl li.done{background:#F1F9F0;border-color:#CDE9C9}
+.wiz .wiz-c1{all:unset;cursor:pointer;flex:none;font-size:12.5px;font-weight:700;color:#2B2D33;background:#fff;border:1px solid #D5D9DF;border-radius:8px;padding:4px 10px;white-space:nowrap;transition:background .2s,color .2s}
+.wiz .wiz-c1:hover{border-color:#B9BFC7;background:#F7F8FA}
+.wiz .wiz-c1.done{background:var(--green);border-color:var(--green);color:#fff}
+.wiz .wiz-c1:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.wiz-d a:not(.wiz-rw){color:var(--green-d);font-weight:700}
+.wiz .wiz-copy{all:unset;cursor:pointer;justify-self:start;display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;border-radius:12px;padding:11px 18px;font-weight:800;font-size:15px}
+.wiz .wiz-copy:hover{background:var(--green-d)}
+.wiz .wiz-copy.done{background:var(--green-d)}
+.wiz .wiz-copy svg{width:17px;height:17px}
+.wiz-copy:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.wiz-d .wiz-cp{justify-self:start;font-size:13px;color:#4A4E55}
+.wiz-tip{background:#FFF8E6;border-radius:14px;padding:10px 14px;font-size:15px}
+.wiz-media{border-radius:20px;overflow:hidden;background:#F4F5F7;display:grid;place-items:center;min-height:0;height:100%}
+.wiz-media img,.wiz-media video{width:100%;height:100%;object-fit:contain;display:block;background:#F4F5F7;min-height:0}
+.wiz-media.multi{background:none;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;place-items:stretch}
+.wiz-fig{margin:0;border-radius:16px;overflow:hidden;background:#F4F5F7;border:1px solid #E6E8EC;display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}
+.wiz-fig figcaption{padding:7px 12px;font-weight:800;font-size:14px;background:#fff;border-bottom:1px solid #E6E8EC}
+.wiz-media img{cursor:zoom-in}
+.wiz-d a.wiz-zl{cursor:zoom-in;text-decoration:underline dotted;text-underline-offset:3px}
+.wiz-d a.wiz-zl::after{content:" 🔍";font-size:.85em}
+.wiz-zoom{position:fixed;inset:0;z-index:50;background:rgba(20,22,28,.88);display:grid;place-items:center;padding:24px;cursor:zoom-out}
+.wiz-zoom img{max-width:100%;max-height:100%;border-radius:12px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.wiz-fin{position:relative;background:#fff;border-radius:28px;display:grid;place-items:center;min-height:0;overflow:hidden;text-align:center;padding:24px}
+.wiz-conf{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wiz-fin-in{position:relative;max-width:560px;display:grid;gap:14px;justify-items:center}
+.wiz-fin-ic{width:84px;height:84px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:42px;font-weight:800;animation:wizPop .5s cubic-bezier(.2,1.6,.4,1) both}
+.wiz-fin h3{font-size:clamp(26px,2.6vw,36px)}
+.wiz-fin p{font-size:17px;color:var(--ink)}
+.wiz-fin .wiz-fin-s{color:var(--grey);font-size:15px}
+@keyframes wizPop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.wiz-fin-ic{animation:none}}
+@media (max-width:900px){.wiz-fin{min-height:420px}}
+.wiz-ph{border:2px dashed #CDD2D8;border-radius:22px;width:100%;height:100%;display:grid;place-items:center;align-content:center;gap:8px;color:#8A9099;text-align:center;padding:20px;font-weight:600;font-size:15px;box-sizing:border-box}
+.wiz-ph svg{width:44px;height:44px}
+.wiz-nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.wiz-hint{flex:1;text-align:right;color:var(--grey);font-size:15px;line-height:1.3;min-width:0}
+.wiz-hint b{color:#2B2D33}
+.wiz-nav button{all:unset;cursor:pointer;border-radius:16px;padding:13px 26px;font-weight:800;font-size:17px;text-align:center;white-space:nowrap}
+.wiz-nav .back{background:#fff;border:1px solid var(--line);color:#2B2D33}
+.wiz-nav .back[disabled]{opacity:.4;cursor:default}
+.wiz-nav .next{background:var(--green);color:#fff}
+.wiz-nav .next:hover{background:var(--green-d)}
+@media (max-height:820px) and (min-width:901px){.wiz{padding:14px;gap:10px;height:calc(100svh - 84px);min-height:520px}.wiz-body{padding:18px;gap:20px}.wiz-txt{gap:8px}.wiz-txt h3{font-size:22px}.wiz-d{font-size:15px;gap:8px;line-height:1.45}.wiz-cpl li{padding:2px 2px 2px 10px;font-size:13.5px}.wiz .wiz-c1{padding:3px 9px}.wiz-tip{padding:8px 12px;font-size:14px}.wiz-nav button{padding:10px 22px;font-size:16px}.wiz-secs button{padding:6px 10px}}
+@media (max-width:1100px){.wiz-secs{display:flex;overflow-x:auto;scrollbar-width:none}.wiz-secs button{flex:none}}
+@media (max-width:900px){.wiz{height:auto;min-height:0;padding:14px;border-radius:30px}.wiz-body{grid-template-columns:1fr;padding:18px}.wiz-txt{overflow:visible}.wiz-media{order:-1;height:auto;max-height:46svh}.wiz-media img{max-height:46svh}.wiz-media.multi{grid-template-rows:none}.wiz-hint{display:none}.wiz-dots{display:none}}
+@media (max-width:600px){.wiz-nav button{padding:13px 16px;font-size:15px}}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;counter-reset:s}
+.step{counter-increment:s;background:var(--panel);border-radius:32px;padding:28px 24px;display:grid;gap:10px;align-content:start}
+.step::before{content:counter(s);width:42px;height:42px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px}
+.step h3{font-size:19px}
+.step p{color:var(--grey);font-size:16px}
+@media (max-width:980px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.steps{grid-template-columns:1fr}}
+.intg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.intg>div{display:grid;grid-template-columns:56px 1fr;gap:16px;padding:24px;border:1px solid var(--line);border-radius:28px;align-items:start}
+.intg .sq{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;color:#fff;font-weight:800}
+.intg h3{font-size:19px;margin-bottom:6px}
+.intg p{color:var(--grey);font-size:16px}
+@media (max-width:760px){.intg{grid-template-columns:1fr}}
+.callout{background:var(--green-l);border-radius:28px;padding:24px 28px;margin-top:22px;color:var(--ink)}
+
+/* kb */
+.kb{display:grid;grid-template-columns:250px 1fr;gap:32px;align-items:start}
+.kb>*{min-width:0}
+.kb-side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);display:grid;gap:4px}
+.kb-side button{all:unset;cursor:pointer;padding:10px 14px;border-radius:12px;font-weight:600;color:var(--grey)}
+.kb-side button:hover{background:var(--panel);color:var(--ink)}
+.kb-side button[aria-pressed="true"]{background:var(--green-l);color:var(--green-d)}
+.kb-search{width:100%;padding:16px 18px;border-radius:14px;border:1px solid var(--line);font:inherit;margin-bottom:16px;background:#fff;color:var(--ink)}
+details.art{border:1px solid var(--line);border-radius:20px;margin-bottom:10px;background:#fff}
+details.art summary{cursor:pointer;padding:18px 22px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+details.art summary::-webkit-details-marker{display:none}
+details.art summary::after{content:"+";color:var(--green);font-size:24px;line-height:1}
+details.art[open] summary::after{content:"–"}
+details.art .body{padding:0 22px 20px;color:var(--grey);display:grid;gap:10px;max-width:74ch}
+details.art .body ol,details.art .body ul{margin:0;padding-left:20px;display:grid;gap:6px}
+details.art .body b{color:var(--ink)}
+.tag{font-size:12px;color:var(--grey);background:var(--panel);border-radius:999px;padding:3px 10px;white-space:nowrap;font-weight:600}
+@media (max-width:820px){.kb{grid-template-columns:1fr}.kb-side{position:static;display:flex;flex-wrap:wrap}}
+
+.final{background:var(--green);color:#fff;border-radius:48px;padding:48px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.final h2{font-size:clamp(26px,3vw,40px)}
+.final p{opacity:.9;margin-top:10px;font-size:19px}
+.final .btn{background:#fff;color:var(--green-d)}
+@media (max-width:760px){.final{grid-template-columns:1fr;padding:32px;border-radius:32px}}
+footer{border-top:1px solid var(--line);padding-block:30px;color:var(--grey);font-size:15px}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#" aria-label="gonets.online"><img class="logo-ic" src="img/logo-face.png" width="40" height="40" alt=""><span class="logo-t">gonets<i>.online</i></span></a>
+    <nav class="tabs" aria-label="Разделы">
+      <a href="#features">Возможности</a>
+      <a href="#price">Цена</a>
+      <a href="#integrations">Интеграции</a>
+    </nav>
+    <a class="btn sm" href="#install">Попробовать бесплатно</a>
+  </div>
+</header>
+
+<main>
+<!-- ================= ГЛАВНАЯ ================= -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>WhatsApp, Telegram и Max <span class="g">в Битрикс24</span> за одну цену на весь портал</h1>
+        <p class="sub">Переписки приходят в открытые линии, менеджеры пишут клиентам первыми прямо из сделки, а роботы сами отвечают и двигают стадии.</p>
+        <div class="cta">
+          <a class="btn" href="#install">Попробовать 14 дней</a>
+          <a class="btn out" href="#price">Сравнить цены</a>
+        </div>
+        <p class="hint">Ставится через раздел «Разработчикам» на ваш сервер.</p>
+      </div>
+      <div class="hero-card"><img src="img/gonec.jpg?v=2" width="1024" height="1024" alt="Гонец на единороге с телефоном на фоне логотипов Telegram, Max, WhatsApp и WABA"></div>
+    </div>
+  </section>
+
+  <section style="padding-top:8px">
+    <div class="wrap why">
+      <div><b class="big">1 цена</b><h3>За весь портал</h3><p>Номеров сколько нужно. У других сервисов платный каждый канал.</p></div>
+      <div><b class="big">120 ₽</b><h3>Прокси на номер</h3><p>В месяц. Через него работают WhatsApp и Telegram номера.</p></div>
+      <div><b class="big">Ваш</b><h3>Сервер и данные</h3><p>Переписки и сессии хранятся у вас, а не у посредника.</p></div>
+      <div><b class="big">14 дней</b><h3>Бесплатно</h3><p>Все функции и любое число номеров на пробный период.</p></div>
+    </div>
+  </section>
+
+<!-- ================= ВОЗМОЖНОСТИ ================= -->
+<section id="features" class="anchor" style="padding-block:0">
+  <div class="wrap page-head"><h2>Возможности</h2><p>Всё общение с клиентом внутри Битрикс24: роботы и бизнес-процессы, виджет в карточках, голосовые, статистика и защита номеров.</p></div>
+  <div class="wrap" id="allFeats"></div>
+</section>
+
+<!-- ================= ЦЕНА ================= -->
+<section id="price" class="anchor" style="padding-block:0">
+  <div class="wrap page-head"><h2>Цена</h2><p>Платите за портал, а не за каждый канал. 14 дней бесплатно, дальше 29 900 ₽ в год за весь портал и прокси 120 ₽ в месяц на номер.</p></div>
+  <section style="padding-top:24px">
+    <div class="wrap price-grid">
+      <div class="plan">
+        <h2 style="font-size:26px">Подписка на портал</h2>
+        <div class="p" id="planPrice"></div>
+        <div class="feat" style="padding:0;display:block"><ul>
+          <li>Номеров без ограничения, на каждом WhatsApp, Telegram и Max</li>
+          <li>WhatsApp Business API через Gupshup</li>
+          <li>Виджет в сделках, контактах и лидах</li>
+          <li>Роботы и бизнес-процессы</li>
+          <li>Голосовые, статистика, лимиты, диагностика</li>
+        </ul></div>
+        <a class="btn" href="#install">Попробовать 14 дней бесплатно</a>
+      </div>
+      <div class="costs">
+        <h3 style="padding:14px 0 4px;font-size:22px">Из чего складывается стоимость</h3>
+        <div><p><b>Подписка</b><span>Фиксированная сумма в год за весь портал Битрикс24, сколько бы ни было номеров</span></p><strong id="costSub"></strong></div>
+        <div><p><b>Прокси</b><span>Один на номер: через него работают WhatsApp и Telegram этого номера. Max и WhatsApp Business прокси не нужен</span></p><strong>120 ₽/мес</strong></div>
+        <div><p><b>Свой хостинг</b><span>Railway, VPS или сервер компании. Номер WhatsApp — около 100–150 МБ памяти</span></p><strong>по тарифу</strong></div>
+        <div><p><b>WhatsApp Business API</b><span>Если нужен официальный номер: сообщения по тарифам Meta и Gupshup</span></p><strong>по желанию</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:12px">
+    <div class="wrap">
+      <div class="center"><h2>Сравнение <span class="g">с конкурентами</span></h2><p>У конкурентов каждый мессенджер на номере — отдельный платный канал. Укажите свои номера и выберите тарифы — посчитаем стоимость за год.</p></div>
+      <div class="cfg">
+        <label class="stp"><span>Сколько номеров</span><span class="stp-in"><button type="button" data-d="-1" data-f="cfN" aria-label="Меньше">−</button><input id="cfN" type="number" min="1" max="200" value="1" inputmode="numeric"><button type="button" data-d="1" data-f="cfN" aria-label="Больше">+</button></span><small>от 1 до 200</small></label>
+        <label class="stp"><span>Мессенджеров на одном номере</span><span class="stp-in"><button type="button" data-d="-1" data-f="cfM" aria-label="Меньше">−</button><input id="cfM" type="number" min="1" max="3" value="3" inputmode="numeric"><button type="button" data-d="1" data-f="cfM" aria-label="Больше">+</button></span><small>WhatsApp, Telegram, Max</small></label>
+        <label class="stp"><span>Номеров WABA</span><span class="stp-in"><button type="button" data-d="-1" data-f="cfW" aria-label="Меньше">−</button><input id="cfW" type="number" min="0" max="50" value="0" inputmode="numeric"><button type="button" data-d="1" data-f="cfW" aria-label="Больше">+</button></span><small>WhatsApp Business API</small></label>
+        <div class="cfg-sum" id="cfSum"></div>
+      </div>
+      <div class="tbl"><table class="cmp">
+        <thead id="cmpHead"></thead>
+        <tbody id="cmpBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0"><div class="wrap two">
+    <div><h3>Партнёрам Битрикс24</h3><p>Ставите приложение клиентам при внедрении: одна подписка на портал, без пересчёта по каналам. Поможем с первой установкой и хостингом, условия партнёрства обсудим отдельно.</p></div>
+    <div><h3>После пробного периода</h3><p>Забыли оплатить — ничего страшного: ещё 5 дней всё работает как обычно, а мы напоминаем об оплате в чате. Затем пересылка сообщений останавливается. Настройки и входы в мессенджеры сохраняются, QR сканировать заново не нужно.</p></div>
+  </div></section>
+</section>
+
+<!-- ================= ИНТЕГРАЦИИ ================= -->
+<section id="integrations" class="anchor" style="padding-block:0">
+  <div class="wrap page-head"><h2>Интеграции</h2><p>Приложение — это ваш сервер. К Битрикс24 он подключён как локальное приложение, к мессенджерам — как ещё одно устройство.</p></div>
+  <section style="padding-top:24px">
+    <div class="wrap">
+      <div class="crm">
+        <div class="crm-c ok">
+          <span class="crm-logo" role="img" aria-label="Битрикс24"><b style="color:#215F98">Битрикс</b><b style="color:#2FC6F6">24</b></span>
+          <p>Открытые линии, карточки сделок, контактов и лидов, роботы и бизнес-процессы.</p>
+          <span class="crm-st"><i></i>Интеграция готова</span>
+        </div>
+        <div class="crm-c soon">
+          <span class="crm-logo" role="img" aria-label="amoCRM"><b style="color:#1F2B3A">amo</b><b style="color:#339DC7">CRM</b></span>
+          <p>Те же мессенджеры, виджет и автоматизация — для воронок amoCRM.</p>
+          <span class="crm-st">Скоро</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="padding-top:24px">
+    <div class="wrap">
+      <div class="panel" style="min-height:0;padding:40px 24px;overflow-x:auto;display:block">
+        <svg viewBox="0 0 900 230" style="min-width:680px;width:100%;display:block" role="img" aria-label="Схема: мессенджеры, ваш сервер, Битрикс24">
+          <g font-family="Manrope, system-ui, sans-serif" font-size="15" font-weight="700">
+            <rect x="10" y="14" width="210" height="48" rx="14" fill="#fff"/><text x="115" y="44" text-anchor="middle" fill="#2B2D33">WhatsApp · Telegram</text>
+            <rect x="10" y="80" width="210" height="48" rx="14" fill="#fff"/><text x="115" y="110" text-anchor="middle" fill="#2B2D33">Max</text>
+            <rect x="10" y="146" width="210" height="48" rx="14" fill="#fff"/><text x="115" y="176" text-anchor="middle" fill="#2B2D33">WhatsApp Business</text>
+            <rect x="335" y="30" width="230" height="150" rx="28" fill="#4FB247"/>
+            <text x="450" y="84" text-anchor="middle" fill="#fff" font-size="19" font-weight="800">Ваш сервер</text>
+            <text x="450" y="112" text-anchor="middle" fill="#fff" font-weight="600" font-size="14">сессии · ключи · файлы</text>
+            <text x="450" y="136" text-anchor="middle" fill="#fff" font-weight="600" font-size="14">Railway, VPS или свой</text>
+            <rect x="680" y="14" width="210" height="48" rx="14" fill="#fff"/><text x="785" y="44" text-anchor="middle" fill="#2B2D33">Открытые линии</text>
+            <rect x="680" y="80" width="210" height="48" rx="14" fill="#fff"/><text x="785" y="110" text-anchor="middle" fill="#2B2D33">Карточки CRM</text>
+            <rect x="680" y="146" width="210" height="48" rx="14" fill="#fff"/><text x="785" y="176" text-anchor="middle" fill="#2B2D33">Роботы и БП</text>
+            <text x="115" y="220" text-anchor="middle" fill="#6E7178" font-size="13" font-weight="600">через прокси номера</text>
+            <text x="785" y="220" text-anchor="middle" fill="#6E7178" font-size="13" font-weight="600">локальное приложение</text>
+            <g stroke="#4FB247" stroke-width="2" fill="none" stroke-dasharray="5 5">
+              <path d="M222 38 C280 38 290 90 333 96"/><path d="M222 104 L333 106"/><path d="M222 170 C280 170 290 122 333 116"/>
+              <path d="M567 96 C610 90 630 38 678 38"/><path d="M567 106 L678 104"/><path d="M567 116 C610 122 630 170 678 170"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="center anchor" id="install"><h2>Установка <span class="g">шаг за шагом</span></h2><p>Пять разделов, в каждом — короткие шаги. Нажимайте «Далее» и повторяйте за инструкцией: сервер ставится готовым шаблоном, вся установка — около 20 минут.</p></div>
+      <div class="wiz anchor" id="wiz" aria-live="polite"></div>
+      <div class="callout"><b>Почему через «Разработчикам».</b> Приложение работает на вашем сервере, поэтому подключается как локальное. Это штатный механизм Битрикс24 для собственных приложений: портал сам выдаёт ключи, а данные клиентов не уходят посредникам.</div>
+    </div>
+  </section>
+</section>
+
+<section><div class="wrap final">
+  <div><h2>Подключите первый номер сегодня</h2><p>14 дней бесплатно со всеми функциями. Поможем развернуть сервер и установить приложение.</p></div>
+  <a class="btn" href="#install">Как установить</a>
+</div></section>
+</main>
+
+<footer><div class="wrap foot"><span>Мессенджеры 2.0 — WhatsApp, Telegram, Max и WhatsApp Business для Битрикс24</span><span>14 дней бесплатно · прокси 120 ₽/мес на номер</span></div></footer>
+
+<script>
+/* ===== Настройки: цена подписки за портал, ₽ в месяц ===== */
+const CONFIG = { priceYear: 29900 /* подписка за портал, ₽ в год */, proxy: 120, trialDays: 14 };
+
+const rub = n => n.toLocaleString("ru-RU") + " ₽";
+const perMonth = Math.round(CONFIG.priceYear/12);
+const MB = {wa:"W",tg:"T",mx:"M",wb:"B"};
+const ava = (init, color, m) => `<span class="ava" style="background:${color}">${init}${m?`<span class="mb ${m}">${MB[m]}</span>`:""}</span>`;
+const wave = n => `<span class="wave">${Array.from({length:n},(_,i)=>`<span style="height:${6+Math.round(Math.abs(Math.sin(i*1.7)+Math.sin(i*.6))*9)}px"></span>`).join("")}</span>`;
+const arrow = (d, w=90, h=110) => `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="#4FB247" stroke-width="2.4" stroke-linecap="round"><path d="${d}"/></svg>`;
+
+/* ---------- макеты ---------- */
+/* ---------- данные для макетов статистики и настроек ---------- */
+const HM_DAYS=[["вт","03.11"],["ср","04.11"],["чт","05.11"],["пт","06.11"],["сб","07.11",1],["вс","08.11",1],["пн","09.11"]];
+const HM_PEAK={9:1,10:2,11:3,12:4,13:2,14:3,15:4,16:3,17:2,18:1,19:0};
+const HM_COL=["#E6E8EC","#CDEFFB","#A6E2F7","#7FD0F2","#5CC0EF"];
+function heat(){
+  const lv=(d,h)=>HM_DAYS[d][2]?((h===12||h===15)&&d===4?1:0):Math.max(0,Math.min(4,HM_PEAK[h]+((d*31+h*17)%3)-1));
+  const hours=[9,10,11,12,13,14,15,16,17,18,19];
+  const sums=HM_DAYS.map((_,d)=>hours.reduce((a,h)=>a+lv(d,h),0)), mx=Math.max(...sums);
+  let g='<span></span>'+sums.map(v=>`<span class="bar" style="height:${Math.max(3,Math.round(v/mx*44))}px"></span>`).join("");
+  hours.forEach(h=>{g+=`<span class="hl">${String(h).padStart(2,"0")}:00</span>`+HM_DAYS.map((_,d)=>`<span class="c" style="background:${HM_COL[lv(d,h)]}"></span>`).join("")});
+  g+='<span></span>'+HM_DAYS.map(([w,dt,we])=>`<span class="dl ${we?"we":""}">${w}<br>${dt}</span>`).join("");
+  return `<div class="hm">${g}</div>`;
+}
+const AP_MENU = on => `<div class="ap-menu">${["Виджет","Уведомления","Прокси","Лимиты","Ключи","Диагностика"].map(x=>`<span class="${x===on?"on":""}">${x}</span>`).join("")}</div>`;
+const AP_TABS = on => `<div class="ap-tabs">${["Номера","Статистика","Настройки"].map(x=>`<span class="${x===on?"on":""}">${x}</span>`).join("")}</div>`;
+const TG_ROW = (t,d) => `<div class="tg-row"><span class="tgl"></span><div><b>${t}</b><span>${d}</span></div></div>`;
+
+const NM_GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="#6E7178" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>';
+function NM_ROW(k,name,who,line,[inn,out,neu,ppl],used,rep){
+  const lvl=rep>=70?["хорошая","#4FB247"]:rep>=40?["средняя","#F09A1A"]:["низкая","#E5463B"];
+  return `<div class="nm-r">
+    <div class="nm-a"><div><span class="mb ${k}">${k==="wa"?"W":"T"}</span><b>${name}</b><span class="pill on">работает</span></div><span class="who2"><b>${who}</b> · линия «${line}»</span></div>
+    <div class="nm-s"><div class="nm-c"><span>Сегодня ▾</span><em title="входящие">📥 ${inn}</em><em title="исходящие">📤 ${out}</em><em title="новые">🆕 ${neu}</em><em title="контакты">👤 ${ppl}</em></div>
+      <div class="track"><i class="${used>=16?"w":""}" style="width:${used/20*100}%"></i></div><small>новых контактов ${used} из 20 в сутки</small></div>
+    <div class="nm-s"><div class="nm-c"><span>Репутация ▾</span><b style="color:${lvl[1]}">${rep} · ${lvl[0]}</b></div>
+      <div class="rep"><i style="width:${rep}%;background:${lvl[1]}"></i><u></u></div><small class="rep-sc"><span>0</span><span>норма 70</span><span>100</span></small></div>
+    <div class="nm-x"><span class="nm-g">${NM_GEAR}</span><span>×</span></div>
+  </div>`;
+}
+const MOCK = {
+list: `<div class="win">
+  <div class="win-h">Мессенджеры 2.0 <small>Открытые линии</small></div>
+  <div class="search">Поиск</div>
+  <div class="row">${ava("ИП","#7C8BA1","wa")}<div class="who"><b>Иван Петров</b><span>Согласен, жду счёт на оплату</span></div><div class="meta">17:37<span class="cnt">2</span></div></div>
+  <div class="row">${ava("АС","#C98B6B","tg")}<div class="who"><b>Анастасия Сергеева</b><span>Фото получила, всё отлично</span></div><div class="meta">17:13<span class="ticks">✓✓</span></div></div>
+  <div class="row">${ava("АП","#B07AA1","mx")}<div class="who"><b>Александра Павлова</b><span>А доставка в субботу будет?</span></div><div class="meta">16:37<span class="cnt">1</span></div></div>
+  <div class="row">${ava("ДС","#5E8C6A","wb")}<div class="who"><b>Дмитрий Степанов</b><span>Направляю вам прайс-лист</span></div><div class="meta">Вчера<span class="ticks">✓✓</span></div></div>
+</div>
+<div class="hand" style="right:-10px;bottom:20px;transform:rotate(-4deg)">все мессенджеры<br>в одной линии</div>`,
+
+parser: `<div class="rfw">
+  <div class="rf" aria-label="Настройки робота «Мессенджеры: последнее сообщение»">
+    <div class="rf-body">
+      <div class="rf-title">Мессенджеры: последнее сообщение</div>
+      <label>Чьё сообщение:</label><span class="sel">Только клиента</span>
+      <label>Мессенджер:</label><span class="sel">Любой</span>
+      <label>Записать текст сообщения в поле:</label><span class="sel w">Комментарий</span>
+      <label>Если текст сообщения (для действий ниже):</label><span class="sel">Содержит</span>
+      <label>Значение — можно несколько через запятую, регистр не важен:</label>
+      <div class="rf-row"><span class="inp">цена, стоимость, сколько стоит, прайс</span><span class="dots">•••</span></div>
+      <label>Сменить стадию на (необязательно):</label><span class="sel">Запрос цены</span>
+      <label>Передать диалог открытой линии сотруднику (необязательно):</label>
+      <div class="ppl"><span class="chipu"><i>ИС</i>Ирина Соколова<em>×</em></span><span class="add">+ выбрать</span></div>
+      <label>Запускать от имени:</label>
+      <div class="ppl"><span class="chipu"><i style="background:#E8A54B">АК</i>Андрей Ковалёв<em>×</em></span><span class="add">+ выбрать</span></div>
+    </div>
+    <div class="rf-foot"><span class="save">Сохранить</span><span class="cancel">Отменить</span></div>
+  </div>
+  <div class="rf-msg"><span class="lbl">Клиент · WhatsApp · 14:24</span>Добрый день! А <mark>сколько стоит</mark> доставка до Казани?</div>
+</div>`,
+
+first: `<div class="rfw">
+  <div class="rf" aria-label="Настройки робота «Мессенджеры: отправить сообщение»">
+    <div class="rf-body">
+      <div class="rf-title">Мессенджеры: отправить сообщение</div>
+      <label>Мессенджер:</label><span class="sel focus">В последний диалог (тот же мессенджер и номер)</span>
+      <label>С какого номера:</label><span class="sel">Автоматически: с которого идёт переписка</span>
+      <label>Показать сообщение в открытой линии:</label><span class="sel">Да</span>
+      <label>Текст (WhatsApp, Telegram, Max; для WABA — другой робот):</label>
+      <div class="rf-row"><span class="ta">Здравствуйте, {=Contact:NAME}! Получили вашу заявку №{=Document:ID}. Менеджер свяжется с вами в течение часа.</span><span class="dots">•••</span></div>
+      <label>Файл — ссылка (картинка, видео или документ), необязательно:</label>
+      <div class="rf-row"><span class="inp plain">https://site.ru/price.pdf</span><span class="dots">•••</span></div>
+      <label>Запускать от имени:</label>
+      <div class="ppl"><span class="chipu"><i style="background:#E8A54B">АК</i>Андрей Ковалёв<em>×</em></span><span class="add">+ выбрать</span></div>
+    </div>
+    <div class="rf-foot"><span class="save">Сохранить</span><span class="cancel">Отменить</span></div>
+  </div>
+  <div class="rf-msg out"><span class="lbl">WhatsApp · отправил робот · 09:02</span>Здравствуйте, Ирина! Получили вашу заявку №4821. Менеджер свяжется с вами в течение часа.</div>
+</div>`,
+
+widget: `<div class="wpair ws" data-mode="label" data-shape="round" data-size="34">
+  <div class="ap wp-set" aria-label="Настройки виджета">
+    ${AP_TABS("Настройки")}
+    <div class="ap-in">
+      <div class="ap-card">
+        <h5>Кнопки в карточке</h5>
+        <div class="ws-row"><span>Вид</span><span class="seg" data-k="mode"><button type="button" data-v="label" class="on">С названием</button><button type="button" data-v="icon">Иконки</button></span></div>
+        <div class="ws-row"><span>Форма</span><span class="seg" data-k="shape"><button type="button" data-v="round" class="on">Круглые</button><button type="button" data-v="square">Квадратные</button></span></div>
+        <div class="ws-row"><span>Размер</span><span class="sl"><input type="range" min="22" max="48" value="34" aria-label="Размер кнопок"><b class="num">34 px</b></span></div>
+        <div class="ws-foot"><span class="go">Сохранить</span></div>
+      </div>
+    </div>
+  </div>
+<div class="dc wp-card" aria-label="Раздел «Клиент» в карточке сделки">
+  <div class="dc-h"><b>КЛИЕНТ</b><span>изменить</span></div>
+  <div class="dc-l">Клиент</div>
+  <div class="dc-c">
+    <div><div class="dc-l" style="font-size:13px">Контакт</div><div class="dc-name">Ирина Соколова</div><div class="dc-ph">+7 916 482 31 07</div></div>
+    <div class="dc-ic">
+      <svg viewBox="0 0 24 24" fill="#4C8FE0"><path d="M6.6 3.5l2.6 3.2c.4.5.4 1.2 0 1.7L8 9.8a12 12 0 0 0 6.2 6.2l1.4-1.2c.5-.4 1.2-.4 1.7 0l3.2 2.6c.5.4.6 1.2.1 1.7l-1.6 1.7c-.7.7-1.8 1-2.8.6A19 19 0 0 1 3.4 8.3c-.4-1 0-2.1.6-2.8l1.7-1.6c.3-.6 1.1-.5 1.5-.1z"/><path d="M15 3.5a6 6 0 0 1 5.5 5.5M15 6.8a3 3 0 0 1 2.4 2.4" fill="none" stroke="#4C8FE0" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#B4BAC2" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="11.5" r="9.5" fill="#4C8FE0"/><path d="M7 21l1.5-3.5L11 20z" fill="#4C8FE0"/><path d="M8 9.5h7.5l-2-2M16 13.5H8.5l2 2" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+  <div class="dc-l">Написать клиенту <span class="dc-q">?</span></div>
+  <div class="dc-w pv-in"></div>
+  <div class="dc-l">Комментарий</div>
+  <div class="dc-ph" style="margin-top:-6px">не заполнено</div>
+  <div class="dc-f"><span>Выбрать поле <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9AA0A8" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span><span class="u">Создать поле</span><span class="u" style="margin-left:auto">Удалить раздел</span></div>
+</div>
+</div>
+<div class="hand" style="left:18px;top:26px;font-size:22px;transform:rotate(-5deg)">переключите —<br>кнопки изменятся</div>`,
+
+allm: `<div class="win">
+  <div class="win-h">Все мессенджеры <small>Контакт · Ирина Соколова</small></div>
+  <div class="row">${ava("W","#2DB742")}<div class="who"><b>WhatsApp · Отдел продаж</b><span>Открыт сейчас · 12 минут назад</span></div><div class="meta"><span class="pill on">Открыть</span></div></div>
+  <div class="row">${ava("T","#2AA3E0")}<div class="who"><b>Telegram · Сервис</b><span>Закрыт · 3 дня назад</span></div><div class="meta"><span class="pill on">Открыть</span></div></div>
+  <div class="row">${ava("B","#0E8A5F")}<div class="who"><b>WhatsApp Business · Компания</b><span>Окно 24 часа закрыто</span></div><div class="meta"><span class="pill warn">Шаблон</span></div></div>
+</div>
+<div class="hand" style="right:0;top:24px;transform:rotate(4deg)">вся история клиента<br>в одной вкладке</div>`,
+
+voice: `<div class="bx" aria-label="Чат открытой линии Битрикс24 с окном записи голосового">
+  <div class="bx-h"><span class="bx-ava">ИС</span><div><b>Ирина Соколова — WhatsApp</b><span>2 участника</span></div>
+    <span class="bx-ic">${["M5 12l4 4 10-10","M14 5l6 6-6 6M20 11H8a4 4 0 0 0-4 4v3","M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM16 16l5 5","M3 5h18v14H3zM15 5v14"].map(d=>`<svg viewBox="0 0 24 24" fill="none" stroke="#A9B0B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`).join("")}</span></div>
+  <div class="bx-chat">
+    <span class="bx-date">Понедельник, 9 ноября</span>
+    <div class="bx-m"><span class="a" style="background:#8A98AD">ИС</span><div class="bx-bub op">Добрый день! Подскажите, как подключить второй номер к линии?<small>10:12</small></div></div>
+    <div class="bx-m"><span class="a op">АК</span><div class="bx-bub"><span class="n">Андрей Ковалёв</span>Сейчас запишу голосовое, так быстрее объяснить<small>10:14</small></div></div>
+    <div class="bx-m"><span class="a" style="background:#8A98AD">ИС</span><div class="bx-bub op">Спасибо, жду<small>10:14</small></div></div>
+    <div class="bx-m"><span class="a op">АК</span><div class="bx-bub"><span class="n">Андрей Ковалёв</span><span class="voice"><span class="play"></span>${wave(16)}<b>0:42</b></span><small>10:16</small></div></div>
+  </div>
+  <div class="bx-foot"><div class="bx-comp">
+    <div class="bx-tools">
+      <span class="bx-app on"><i style="background:#E0563B"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3" fill="#fff"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/></svg></i>Голосовое</span>
+    </div>
+    <div class="bx-in1"><svg viewBox="0 0 24 24" fill="none" stroke="#A9B0B8" stroke-width="1.8" stroke-linecap="round"><path d="M20 11l-8 8a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-3-3l8-8"/></svg><span>Нажмите @ или +, чтобы упомянуть человека, чат или AI</span></div>
+    <div class="bx-in2">
+      ${["M4 5h16v6H4zM4 13h16v6H4z","M13 2L5 14h6l-1 8 8-12h-6z","M4 4h16v16H4zM14 8l-4 8","M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM4 4l16 16"].map((d,i)=>`<svg class="${i>1?"opt":""}" viewBox="0 0 24 24" fill="none" stroke="#A9B0B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`).join("")}
+      <span class="bx-sale"><svg viewBox="0 0 24 24" fill="none" stroke="#555A61" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M12 9v6M10 10.5h3a1 1 0 0 1 0 2h-2a1 1 0 0 0 0 2h3"/></svg>Продажи в чате</span>
+      <svg class="opt" viewBox="0 0 24 24" fill="none" stroke="#A9B0B8" stroke-width="1.8"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18"/></svg>
+      <span class="sp"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#3E8BF0" stroke-width="2"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>
+      <svg class="opt" viewBox="0 0 24 24" fill="none" stroke="#A9B0B8" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/></svg>
+      <svg class="opt" viewBox="0 0 24 24" fill="none" stroke="#A9B0B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5M11 12V3M14 12V5M5 12v3a5 5 0 0 0 5 5h4l5-4V9h-5"/></svg>
+      <span class="bx-send"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M3 11l18-8-6 18-3-7z"/></svg></span>
+    </div>
+  </div></div>
+  <div class="bx-pop">
+    <h5><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B2D33" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/></svg>Голосовое сообщение</h5>
+    <div class="sub">WhatsApp · Ирина Соколова · +7 912 ••• 41 07</div>
+    <div class="bx-rec"><span class="bx-mic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3" fill="#fff"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/></svg></span>
+      <div><div class="bx-time">0:42</div><p>Прослушайте и отправьте или перезапишите</p><div class="bx-prog"></div></div></div>
+    <div class="bx-player"><svg viewBox="0 0 24 24" fill="#fff"><path d="M7 4l13 8-13 8z"/></svg><span>00:00</span><span class="tr"></span><span>00:42</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg></div>
+    <div class="bx-btns"><span class="bx-go">Отправить клиенту</span><span class="bx-re">Перезаписать</span></div>
+  </div>
+</div>`,
+
+dup: `<div class="chat">
+  <div class="chat-top"><span>Открытая линия · WhatsApp</span><span class="grey" style="font-size:13px">Андрей К.</span></div>
+  <div class="from">+7 921 ••• 55 18</div>
+  <div class="b in">Подскажите, заказ уже отправили?<small>09:40</small></div>
+  <div class="from r">Отправлено с телефона</div>
+  <div class="b out">Да, сегодня утром, трек пришлю чуть позже<small>09:52 ✓✓</small></div>
+  <div class="from r">Бизнес-процесс</div>
+  <div class="b out">Ваш заказ передан в доставку. Трек-номер: 80 0451 2236 117<small>10:15 ✓✓</small></div>
+  <span class="sys">Всё в истории сделки</span>
+</div>
+<div class="hand" style="right:-4px;top:40px;transform:rotate(5deg)">написал с телефона —<br>сообщение в CRM</div>`,
+
+files: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:470px;align-items:end">
+  <div class="b lt" style="max-width:100%;justify-self:stretch;background:#fff"><span class="file"><i></i><b>Прайс-лист.pdf</b></span><small>11:09 ✓✓</small></div>
+  <div class="b lt" style="max-width:100%;justify-self:stretch">А как вам вариант посмелее?<small>11:10 ✓✓</small></div>
+  <div class="b in" style="max-width:100%;padding:6px"><div class="photo v"></div><small style="padding:0 6px">15:08</small></div>
+  <div class="b lt" style="max-width:100%;padding:6px"><div class="photo" style="height:150px;background:linear-gradient(160deg,#9CC9E8,#5D8FBF 60%,#34587E)"></div><small style="padding:0 6px">11:10</small></div>
+</div>`,
+
+stats: `<div class="card" style="max-width:460px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h4>Статистика · сегодня</h4><span class="pill on">Все сотрудники</span></div>
+  <div class="tiles"><div class="tile"><b class="num">148</b><span>диалогов</span></div><div class="tile"><b class="num">37</b><span>новых</span></div><div class="tile"><b class="num">4 мин</b><span>ответ, в среднем</span></div></div>
+  <div class="row" style="padding:8px 0;grid-template-columns:40px 1fr auto">${ava("ОМ","#8A98AD","wa").replace('class="ava"','class="ava" style="width:40px;height:40px;font-size:14px;background:#8A98AD"')}<div class="who"><b>Ольга М.</b><span>без ответа дольше часа</span></div><span class="cnt">3</span></div>
+  <div class="row" style="padding:8px 0;grid-template-columns:40px 1fr auto">${ava("СК","#A28C6C","tg").replace('class="ava"','class="ava" style="width:40px;height:40px;font-size:14px;background:#A28C6C"')}<div class="who"><b>Сергей К.</b><span>без ответа дольше часа</span></div><span class="cnt">1</span></div>
+</div>
+<div class="hand" style="left:6px;top:20px;transform:rotate(-5deg)">видно, кто<br>забыл ответить</div>`,
+
+protect: `<div class="card" style="max-width:440px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h4>Отдел продаж · +7 900 ••• 12 30</h4></div>
+  <div class="limit"><div><span>WhatsApp · новых контактов сегодня</span><span class="num">16 / 20</span></div><div class="track"><i class="w" style="width:80%"></i></div></div>
+  <div class="limit"><div><span>Telegram</span><span class="num">7 / 20</span></div><div class="track"><i style="width:35%"></i></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill on">Репутация 82 · хорошая</span><span class="pill on">Прокси работает</span><span class="pill warn">80% лимита</span></div>
+  <div class="fld"><span class="lbl">Ответственные</span><b>Ирина С., Андрей К.</b></div>
+</div>
+<div class="hand" style="right:4px;bottom:10px;transform:rotate(4deg)">номер не попадёт<br>в бан за спам</div>`,
+
+waba: `<div class="rfw">
+  <div class="rf" aria-label="Настройки робота отправки в WhatsApp Business">
+    <div class="rf-body">
+      <div class="rf-title">WhatsApp Business: отправить сообщение</div>
+      <label>С какого номера:</label><span class="sel focus">Автоматически: с которого идёт переписка</span>
+      <label>Показать сообщение в открытой линии:</label><span class="sel">Да</span>
+      <label>Шаблон (если окно 24 часа закрыто или текста нет):</label><span class="sel">order_ready — «Заказ готов»</span>
+      <label>Переменные шаблона — через «;» по порядку:</label>
+      <div class="rf-row"><span class="inp plain">{=Contact:NAME}; {=Document:ID}; ул. Ленина, 12</span><span class="dots">•••</span></div>
+      <label>Текст (если окно 24 часа открыто):</label>
+      <div class="rf-row"><span class="ta">{=Contact:NAME}, ваш заказ №{=Document:ID} готов. Ждём вас!</span><span class="dots">•••</span></div>
+      <label>Файл — ссылка (в шаблоне — для заголовка с медиа), необязательно:</label>
+      <div class="rf-row"><span class="inp plain"></span><span class="dots">•••</span></div>
+      <label>Запускать от имени:</label>
+      <div class="ppl"><span class="chipu"><i style="background:#E8A54B">АК</i>Андрей Ковалёв<em>×</em></span><span class="add">+ выбрать</span></div>
+    </div>
+    <div class="rf-foot"><span class="save">Сохранить</span><span class="cancel">Отменить</span></div>
+  </div>
+  <div class="rf-msg out"><span class="lbl">WhatsApp Business · шаблон · окно 24 часа закрыто</span>Ирина, ваш заказ №4821 готов. Забрать можно по адресу: ул. Ленина, 12</div>
+</div>`,
+
+stats: `<div class="ap" aria-label="Статистика приложения">
+  ${AP_TABS("Статистика")}
+  <div class="ap-in">
+    <div class="ap-bar"><span class="seg"><button>Сегодня</button><button>Вчера</button><button class="on">7 дней</button><button>30 дней</button></span><span class="ap-sel">Все сотрудники</span></div>
+    <div class="st5">
+      <div><span>Диалогов</span><b>148</b><small>клиентов, которым писали</small></div>
+      <div><span>Новых</span><b>37</b><small>продолжено: 111</small></div>
+      <div><span>Реплик</span><b>412</b><small>сообщений: 1 036</small></div>
+      <div><span>Ответ в среднем</span><b>4 мин</b><small>сколько ждал клиент</small></div>
+      <div class="warn"><span>Без ответа</span><b>3</b><small>дольше часа</small></div>
+    </div>
+    <div class="hm-h"><b>Активность</b> — реплики по часам с 03.11 по 09.11</div>
+    ${heat()}
+    <div class="hm-leg">меньше ${HM_COL.map(c=>`<i style="background:${c}"></i>`).join("")} больше · строки — часы, столбцы — дни</div>
+  </div>
+</div>`,
+
+notify: `<div class="rfw">
+  <div class="ap" aria-label="Настройки уведомлений">
+    ${AP_TABS("Настройки")}
+    <div class="ap-in ap-set">
+      ${AP_MENU("Уведомления")}
+      <div class="ap-card">
+        <h5>Сотруднику <small>в Битрикс24</small></h5>
+        <p class="d">Приходят ответственным за номер — только по их номерам.</p>
+        ${TG_ROW("Качество номера упало","Репутация стала средней или низкой — с советом, что делать, чтобы номер не заблокировали.")}
+        ${TG_ROW("Номер отключился","Слетела сессия, нужен новый QR. И когда снова заработал.")}
+        ${TG_ROW("Не работает прокси номера","WhatsApp и Telegram номера без связи. И когда прокси снова работает.")}
+        ${TG_ROW("Превышен лимит новых контактов","Сотрудник написал первым сверх лимита номера.")}
+        <h5 style="margin-top:6px">Руководителю <small>в Telegram и Битрикс24</small></h5>
+        ${TG_ROW("Сбои мессенджеров и прокси","Отключения, ошибки доставки, перезапуск сервера — и восстановление.")}
+      </div>
+    </div>
+  </div>
+  <div class="rf-msg"><span class="lbl">Telegram · бот уведомлений · 10:42</span>WhatsApp «Отдел продаж» отключился: нужен новый QR. Откройте приложение → Номера.</div>
+</div>`,
+
+rep: `<div class="rfw rep-w rep-img">
+  <img class="rep-shot" src="img/rep.png" width="2262" height="924" loading="lazy" alt="Вкладка «Номера»: у каждого мессенджера счётчики за сегодня, лимит новых контактов и репутация от 0 до 100">
+  <div class="rf-msg"><span class="lbl">Совет · репутация Telegram средняя</span>Пишите первыми не больше 10–15 новым людям в день, начинайте с вопроса, а не с рекламы, и не отправляйте один и тот же текст подряд.</div>
+</div>`,
+
+support: `<div class="bx" aria-label="Напоминание об оплате в чате открытой линии">
+  <div class="bx-h"><span class="bx-ava">ИС</span><div><b>Ирина Соколова — WhatsApp</b><span>2 участника</span></div></div>
+  <div class="bx-chat">
+    <span class="bx-date">сегодня</span>
+    <div class="bx-m"><span class="a" style="background:#8A98AD">ИС</span><div class="bx-bub op">Добрый день! Заказ уже в пути?<small>09:41</small></div></div>
+    <div class="bx-m"><span class="a op">АК</span><div class="bx-bub"><span class="n">Андрей Ковалёв</span>Да, курьер будет у вас до 18:00<small>09:43</small></div></div>
+    <div class="bx-sys"><b>Мессенджеры 2.0</b>
+      <span><svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 3l10 18H2z" fill="#F5B83D"/><path d="M12 10v5M12 17.5v.5" stroke="#3A2A00" stroke-width="2.2" stroke-linecap="round"/></svg>Подписка закончилась 10 ноября. Всё работает ещё 5 дней — оплатите до 15 ноября, и номера не отключатся.</span>
+      <small>09:58</small></div>
+  </div>
+</div>`
+};
+
+/* ---------- блоки возможностей ---------- */
+const FEATS = [
+ {id:"widget", k:"Виджет в сделках и контактах", t:"Свой виджет в сделках и контактах", p:"Кнопки мессенджеров прямо в карточке сделки, контакта и лида. Один клик — и открыт чат с клиентом.",
+  li:["Подсвечен мессенджер, где уже идёт переписка","Вид кнопок настраиваете сами"]},
+ {id:"voice", k:"Голосовые", t:"Голосовые прямо из Битрикс24", p:"Кнопка «Голосовое» в чате открытой линии: записали, прослушали, отправили. Клиент получает настоящее голосовое, а не аудиофайл.",
+  li:["WhatsApp, Telegram, Max и WhatsApp Business","Аудиофайл из мобильного Битрикс24 тоже уходит голосовым"]},
+ {id:"stats", k:"Статистика", t:"Видно нагрузку каждого сотрудника", p:"Сколько диалогов вёл менеджер, скольким новым клиентам написал первым, сколько реплик и как быстро отвечал. Тепловая карта показывает, в какие часы и дни нагрузка выше.",
+  li:["Сегодня, вчера, 7 и 30 дней — по всем или по одному сотруднику","Среднее время ответа и клиенты без ответа дольше часа","Нагрузка по номерам и разбивка по мессенджерам"]},
+ {id:"notify", k:"Уведомления", t:"Руководитель в курсе любых сбоев", p:"Гибкие уведомления в Битрикс24 и в Telegram-бот: номер отключился, не работает прокси, упало качество номера, превышен лимит. Каждое включается отдельно.",
+  li:["Сотрудникам — только по их номерам","Руководителю — в Telegram и Битрикс24, в том числе когда всё снова заработало","Совет, что делать, чтобы номер не заблокировали"]},
+ {id:"rep", k:"Репутация номера", t:"Номер не уйдёт в блокировку", p:"Приложение считает репутацию каждого номера по тому, как клиенты отвечают на ваши первые сообщения. Репутация упала — вы сразу это видите и получаете советы, как не заспамить номер.",
+  li:["Оценка от 0 до 100: хорошая от 70, средняя 40–69, низкая ниже 40","Лимит новых контактов в сутки на каждый мессенджер","Входящие, исходящие и новые контакты за сегодня по каждому номеру"]},
+ {id:"support", k:"Лояльная поддержка", t:"Забыли оплатить? Номера не отключатся", p:"После окончания подписки у вас есть 5 дней на оплату. Всё это время сообщения ходят как обычно, а мы заранее напоминаем об оплате прямо в чате открытой линии.",
+  li:["Напоминание до окончания подписки и после","5 дней работы без отключения","Настройки и входы в мессенджеры сохраняются"]},
+ {id:"first", k:"Бизнес-процессы", t:"Написать клиенту — роботом", p:"Новая заявка или смена стадии — клиенту сразу уходит сообщение в WhatsApp, Telegram или Max. Имя, номер заказа и любые поля подставляются из карточки.",
+  li:["В последний диалог: тот же мессенджер и номер, с которого шла переписка","Номер автоматически, ответственного за карточку или конкретный","Текст и файл по ссылке: картинка, видео или документ","Сообщение видно в открытой линии и в истории сделки"]},
+ {id:"parser", k:"Бизнес-процессы", t:"Парсер сообщений клиента", p:"Робот читает последнее сообщение клиента и по ключевым словам понимает, чего он хочет. Дальше сам меняет стадию, передаёт диалог нужному сотруднику и записывает текст в карточку.",
+  li:["Спросил цену: «цена, сколько стоит, прайс» → стадия «Запрос цены»","Ответил на рассылку: «да, интересно, давайте» → диалог уходит менеджеру","Отказался: «не интересно, не надо» → стадия «Отказ»","Работает в роботах и бизнес-процессах, с WhatsApp, Telegram, Max и WABA"]},
+ {id:"waba", k:"WhatsApp Business API", t:"Отдельный робот для WABA", p:"Официальный номер через Gupshup живёт по своим правилам, поэтому для него свой робот. Если клиент писал в последние 24 часа — уходит обычный текст. Если окно закрыто — одобренный шаблон.",
+  li:["Выбор шаблона из одобренных в Gupshup","Переменные из карточки через «;» по порядку","Картинка, видео или документ для шаблона с медиа","Статусы доставки и подсказка в чате, если окно закрыто"]},
+];
+const featHTML = (f, i) => `<div class="feat ${i%2?"rev":""} ${["voice","parser","first","waba","stats","notify","widget","rep","support"].includes(f.id)?"wide":""}">
+  <div class="panel">${MOCK[f.id]}</div>
+  <div class="txt"><span class="kicker">${f.k}</span><h2>${f.t}</h2><p>${f.p}</p>${f.li.length?`<ul>${f.li.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}</div>
+</div>`;
+// чтобы панель была то слева, то справа: в .rev панель уходит вправо
+document.getElementById("allFeats").innerHTML = FEATS.map(featHTML).join("");
+/* ---------- живой предпросмотр настроек виджета ---------- */
+const WS_BTNS=[["tg","Telegram","#4C9BE0",1,1],["wa","WhatsApp","#B4BAC2",0,0],["wb","WABA","#3A8A72",1,0]];
+const WS_ICON={tg:'<path d="M3 11.5l17-7-3 15.5-5-3.5-2.5 2.5-.5-4 7-6-8.5 5z" fill="#fff"/>',wa:'<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z" fill="none" stroke="#fff" stroke-width="2"/>',wb:'<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z" fill="none" stroke="#fff" stroke-width="2"/><text x="12.3" y="15.3" text-anchor="middle" fill="#fff" font-size="9" font-weight="800" font-family="Arial">B</text>'};
+function renderWs(ws){
+  const m=ws.dataset.mode, sh=ws.dataset.shape, sz=+ws.dataset.size, r=sh==="round"?"50%":Math.round(sz*.26)+"px";
+  const svg=k=>`<svg viewBox="0 0 24 24" style="width:${Math.round(sz*.5)}px;height:${Math.round(sz*.5)}px">${WS_ICON[k]}</svg>`;
+  const plus=`<span class="wbx plus" style="width:${sz}px;height:${sz}px;border-radius:${r};font-size:${Math.round(sz*.55)}px">+</span>`;
+  ws.querySelector(".pv-in").innerHTML = plus + WS_BTNS.map(([k,n,c,ring,dot])=> m==="icon"
+    ? `<span class="wbx ${ring?"ring":""}" style="width:${sz}px;height:${sz}px;border-radius:${r};background:${c};--rc:${c}">${svg(k)}${dot?'<i class="dot"></i>':""}</span>`
+    : `<span class="wbx lab ${ring?"ring":""}" style="height:${sz}px;border-radius:${sh==="round"?"999px":r};--rc:${c};font-size:${Math.max(11,Math.round(sz*.42))}px"><span class="ic" style="width:${sz-8}px;height:${sz-8}px;border-radius:${sh==="round"?"50%":Math.round(sz*.2)+"px"};background:${c}">${svg(k)}</span>${n}${dot?'<i class="dot"></i>':""}</span>`).join("");
+}
+document.querySelectorAll(".ws").forEach(ws=>{
+  renderWs(ws);
+  ws.addEventListener("click",e=>{const b=e.target.closest(".seg button");if(!b)return;const seg=b.parentElement;seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));ws.dataset[seg.dataset.k]=b.dataset.v;renderWs(ws);});
+  ws.querySelector("input[type=range]").addEventListener("input",e=>{ws.dataset.size=e.target.value;ws.querySelector(".sl b").textContent=e.target.value+" px";renderWs(ws);});
+});
+
+/* ---------- цена ---------- */
+document.getElementById("planPrice").innerHTML = `${rub(CONFIG.priceYear)} <small>/ год</small><span class="pm">≈ ${rub(perMonth)} в месяц за весь портал</span>`;
+document.getElementById("costSub").textContent = rub(CONFIG.priceYear) + "/год";
+
+/* Тарифы конкурентов: [название, цена канала в месяц при оплате за год, ограничения] — официальные страницы, 09.11.2026 */
+const RIV = [
+ {name:"Wazzup", by:"За канал", trial:"3 дня", waba:6000, tariffs:[["START",1000,"Писать первым — 50 диалогов"],["INBOX",2000,"Только входящие, 500 диалогов"],["PRO",4000,"500 диалогов, групповые чаты"],["MAX",6000,"Без лимита диалогов, расшифровка голосовых"]]},
+ {name:"ChatApp", by:"За канал", trial:"есть", waba:6000, tariffs:[["Стартовый",1000,"Скидки за год нет"],["Профессиональный",3200,"—"],["Максимальный",4800,"Старший тариф"]]},
+ {name:"Radist.Online", by:"За канал", trial:"3 дня", waba:5000, tariffs:[["Начальный",800,"50 новых исходящих диалогов в месяц"],["Стандартный",3200,"Без лимита, рассылки, групповые чаты"]]},
+ {name:"i2crm", by:"За аккаунт", trial:"первый месяц за 1 ₽", waba:4950, tariffs:[["Ограниченный",1990,"Не больше 150 сообщений в сутки"],["Безлимитный",3990,"Без лимита сообщений"],["Максимальный",5990,"Старший тариф"]]}
+];
+const sel = RIV.map(r=>r.tariffs.length-1); // по умолчанию — старший тариф
+const cfN=document.getElementById("cfN"), cfM=document.getElementById("cfM"), cfW=document.getElementById("cfW");
+const clampIn = el => { let v=Math.round(+el.value||+el.min); v=Math.max(+el.min,Math.min(+el.max,v)); el.value=v; return v; };
+document.getElementById("cmpHead").innerHTML = `<tr><th></th><th class="us">Мессенджеры 2.0<span class="th-s">Подписка на портал</span></th>${RIV.map((r,i)=>`<th>${r.name}<select class="tsel" data-i="${i}" aria-label="Тариф ${r.name}">${r.tariffs.map((t,k)=>`<option value="${k}"${k===sel[i]?" selected":""}>${t[0]}</option>`).join("")}</select></th>`).join("")}</tr>`;
+function renderCmp(){
+  const n=clampIn(cfN), m=clampIn(cfM), w=clampIn(cfW), ch=n*m;
+  const our = CONFIG.priceYear + CONFIG.proxy*12*n;
+  const T = RIV.map((r,i)=>r.tariffs[sel[i]]);
+  const svc = T.map((t,i)=>(t[1]*ch + RIV[i].waba*w)*12), tot = svc;
+  const diff = v => { const d=v-our; return d>0?`<span class="up">переплата ${rub(d)}</span>`:d<0?`<span class="dn">дешевле на ${rub(-d)}</span>`:""; };
+  const rows = [
+   ["Ограничения тарифа", ["Без лимитов на диалоги и номера", ...T.map(t=>t[2])]],
+   ["Цена канала в месяц", ["Не считается", ...T.map(t=>rub(t[1]))]],
+   ["Платных каналов", ["0 — платите за портал", ...T.map(()=>`${n} × ${m} = ${ch}`+(w?` + ${w} WABA`:""))]],
+   ["WhatsApp Business API, номер в месяц", ["<span class='yes'>0 ₽ — входит в подписку</span>", ...RIV.map(r=>rub(r.waba)+(w?` × ${w}`:""))]],
+   ["Сервис в год", [`${rub(CONFIG.priceYear)} + прокси ${rub(CONFIG.proxy*12*n)}`, ...svc.map(rub)]],
+   ["Итого в год", [`<b class="big2">${rub(our)}</b>`, ...tot.map(v=>`<b class="big2">${rub(v)}</b>${diff(v)}`)], "sum"],
+   ["Как считается цена", ["За портал", ...RIV.map(r=>r.by)]],
+   ["Каждый новый номер", ["120 ₽ в месяц (прокси)", ...RIV.map(()=>"цена канала × мессенджеры")]],
+   ["Установка в Битрикс24", ["Локальное приложение", ...RIV.map(()=>"Из Битрикс24 Маркета")]],
+   ["Где хранятся переписки и сессии", ["<span class='yes'>На вашем сервере</span>", ...RIV.map(()=>"Облако сервиса")]],
+   ["Хостинг", ["Свой (Railway, VPS)", ...RIV.map(()=>"Не нужен")]],
+   ["Пробный период", [CONFIG.trialDays+" дней", ...RIV.map(r=>r.trial)]]
+  ];
+  document.getElementById("cmpBody").innerHTML = rows.map(([h,v,c])=>`<tr class="${c||""}"><td class="rh">${h}</td>${v.map((x,i)=>`<td class="${i?"":"us"} num">${x}</td>`).join("")}</tr>`).join("");
+  const best = Math.min(...tot);
+  document.getElementById("cfSum").innerHTML = `<span>${n} ${plural(n,["номер","номера","номеров"])} × ${m} ${plural(m,["мессенджер","мессенджера","мессенджеров"])}${w?` + ${w} WABA`:""}</span><b>${rub(our)} в год</b><span>${best>our?`Экономия от ${rub(best-our)} в год`:`Самый дешёвый вариант у конкурентов — ${rub(best)}`}</span>`;
+}
+const plural=(n,f)=>{const a=n%100,b=n%10;return a>10&&a<20?f[2]:b===1?f[0]:b>1&&b<5?f[1]:f[2]};
+document.querySelectorAll(".tsel").forEach(x=>x.addEventListener("change",()=>{sel[+x.dataset.i]=+x.value;renderCmp();}));
+[cfN,cfM,cfW].forEach(x=>{x.addEventListener("input",()=>{if(x.value!=="")renderCmp();});x.addEventListener("change",renderCmp);});
+document.querySelectorAll(".stp button").forEach(b=>b.addEventListener("click",()=>{const f=document.getElementById(b.dataset.f);f.value=(+f.value||0)+(+b.dataset.d);renderCmp();}));
+renderCmp();
+
+;
+
+/* ---------- мастер установки ----------
+   Разделы → шаги. Чтобы добавить картинку или видео к шагу, заполните media:
+   media:{type:"img", src:"img/wiz/1-1.png?v=5"}  или  media:{type:"video", src:"video/1-1.mp4"}
+   Пока src пустой, показывается рамка-заглушка.
+   Ссылку на шаблон Railway впишите в RAILWAY_URL. */
+const RAILWAY_URL = "https://railway.com/deploy/iEs4UR?referralCode=BKTKNw&utm_medium=integration&utm_source=template&utm_campaign=generic";
+const B24_RIGHTS = ["CRM (crm)","Бизнес-процессы (bizproc)","Открытые линии (imopenlines)","Коннекторы для внешних мессенджеров (imconnector)","Пользователи (user)","Чат и уведомления (im)","Встраивание приложений (placement)"];
+const WIZ = [
+ {t:"Сервер на Railway", d:"Готовый шаблон: сервер, диск и адрес настроены за вас", s:[
+  {t:"Зарегистрируйтесь в Railway", p:"Откройте <a href=\"https://railway.com\" target=\"_blank\" rel=\"noopener\">railway.com</a> и нажмите <b>Sign in</b>. Выберите <b>Continue with GitHub</b>, <b>Continue with Google</b> или <b>Log in using email</b> — аккаунт создастся сам. Если Railway попросит подтвердить почту — подтвердите.",
+   tip:"Railway даёт новым аккаунтам пробный период: <b>30 дней или $5 на счёте</b> — что закончится раньше. Чтобы сервер потом не остановился, подключите карту и тариф <b>Hobby</b> (около $5 в месяц) в <b>Account → Billing</b>.", media:{type:"img",src:"img/wiz/1-1.png?v=5"}},
+  {t:"Откройте шаблон", p:"Вы вошли в аккаунт — теперь нажмите кнопку ниже. Откроется наш шаблон: у сервиса <b>messenger-bridge</b> стоит зелёная отметка <b>Ready to be deployed</b>. Кнопку <b>Configure</b> не трогайте — переменные задавать не нужно, все ключи вы введёте позже на странице установки.", btn:true,
+   media:{type:"img",src:"img/wiz/1-2.png?v=5"}},
+  {t:"Нажмите Deploy", p:"Нажмите <b>Deploy</b> на странице шаблона. Railway создаст проект и сам запустит сервер: на карточке <b>messenger-bridge</b> появится <b>Deploying</b>, а справа — «Deployment in progress».",
+   tip:"Если запуск не начался автоматически, нажмите <b>Deploy</b> в проекте ещё раз.", media:{type:"img",src:"img/wiz/1-3.png?v=5"}},
+  {t:"Дождитесь запуска", p:"Railway запускает сервер 2–3 минуты. Готово, когда на карточке <b>messenger-bridge</b> горит зелёное <b>Online</b>, а справа — <b>ACTIVE</b> и «Deployment successful».",
+   media:{type:"img",src:"img/wiz/1-4.png?v=5"}},
+  {t:"Найдите адрес сервера", p:"Нажмите на карточку <b>messenger-bridge</b> → вкладка <b>Settings</b> → блок <b>Networking</b> → <b>Public networking</b>. Там адрес вида <code>xxx.up.railway.app</code> с отметкой «Port 8080» — это адрес вашего сервера. Скопируйте его кнопкой копирования справа от адреса.",
+   media:{type:"img",src:"img/wiz/1-5.png?v=5"}},
+  {t:"Откройте страницу установки", p:"Откройте <b>новую вкладку</b> браузера и перейдите по адресу сервера. Откроется страница «Подключение мессенджеров к Битрикс24» — на ней готовые адреса для Битрикс24 с кнопками «Скопировать» и поля для ключей.",
+   tip:"<b>Не закрывайте эту вкладку</b> до конца установки: в следующих разделах вы будете копировать отсюда адреса и вставлять сюда ключи.", media:{type:"img",src:"img/wiz/1-6.png?v=5"}}
+ ]},
+ {t:"Приложение в Битрикс24", d:"Подключаем сервер через «Разработчикам»", s:[
+  {t:"Откройте «Разработчикам»", p:"В левом меню Битрикс24 откройте <b>Разработчикам</b> (может прятаться в «Ещё») → <b>Другое</b> → <b>Локальное приложение</b>.",
+   tip:"Нужны права администратора портала.", media:{type:"img",src:"img/wiz/2-1.png?v=5"}},
+  {t:"Выберите тип", p:"Тип приложения — <b>Серверное</b>. Галочку «Использует только API» <b>не</b> ставьте.",
+   media:{type:"img",src:"img/wiz/2-2.png?v=5"}},
+  {t:"Вставьте адреса", p:"Перенесите три значения со страницы установки в форму Битрикс24. У каждой строки нажмите <b>Скопировать</b> и вставьте в поле <b>с тем же названием</b>:",
+   li:["<b>Путь вашего обработчика</b>","<b>Путь для первоначальной установки</b>","<b>Название пункта меню</b>"],
+   media:[{type:"img",src:"img/wiz/2-3a.png?v=5",cap:"1. Страница установки — копируете"},{type:"img",src:"img/wiz/2-3b.png?v=5",cap:"2. Форма в Битрикс24 — вставляете"}]},
+  {t:"Отметьте права", p:"В блоке <b>Настройка прав</b> нажмите <b>+ выбрать</b> и добавьте все семь прав. Права добавляются по одному: нажмите «Копировать» у права, вставьте в поиск и выберите его в списке. Скопированные права подсвечиваются зелёным.", cp:B24_RIGHTS,
+   media:{type:"img",src:"img/wiz/2-4.png?v=5"}},
+  {t:"Нажмите «Сохранить»", p:"Внизу формы нажмите <b>Сохранить</b>. Битрикс24 вернёт вас к списку <b>Интеграции</b> с надписью «Изменения сохранены» — ваше приложение появится в списке.",
+   tip:"Кнопку «Переустановить» пока не нажимайте: сначала ключи.", media:{type:"img",src:"img/wiz/2-5.png?v=5"}}
+ ]},
+ {t:"Ключи", d:"Связываем портал и сервер, при необходимости — Telegram", s:[
+  {t:"Перенесите код и ключ приложения", p:"В списке <b>Интеграции</b> нажмите на строку приложения — в форме появятся два новых поля. Скопируйте их и вставьте на вкладке со страницей установки, в блок «2. Вставьте код и ключ приложения», в поля с теми же названиями:",
+   li:["<b>Код приложения (client_id)</b> — начинается с <code>local.</code>","<b>Ключ приложения (client_secret)</b>"],
+   tip:"Ключ приложения — секретный. Не пересылайте его и не публикуйте.", media:[{type:"img",src:"img/wiz/2-6.png?v=5",cap:"1. Форма в Битрикс24 — копируете"},{type:"img",src:"img/wiz/3-1.png?v=5",cap:"2. Страница установки — вставляете"}]},
+  {t:"Войдите на my.telegram.org", p:"Если будете подключать Telegram, откройте <a href=\"https://my.telegram.org\" target=\"_blank\" rel=\"noopener\">my.telegram.org</a>. Выберите страну, введите номер телефона в международном формате и нажмите <b>Next</b>. Код придёт <b>в приложение Telegram</b>, а не по СМС — введите его на сайте.",
+   tip:"Лучше использовать номер компании, а не личный. Telegram не нужен — оставьте поля api_id и api_hash пустыми и просто нажмите «Сохранить», ключи можно добавить позже.", media:{type:"img",src:"img/wiz/3-2.png?v=5"}},
+  {t:"Откройте Development Tools", p:"После входа откроется страница <b>Your Telegram Core</b>. Нажмите на карточку <b>Development Tools</b> — «Create and manage your API apps».",
+   media:{type:"img",src:"img/wiz/3-3.png?v=5"}},
+  {t:"Заполните форму и создайте приложение", p:"В блоке <b>About the app</b> заполните:",
+   li:["<b>App title</b> — например «Bitrix Bridge», не меньше 5 символов","<b>Short name</b> — например «bxbridge», только латиница и цифры, 5–32 символа","<b>Platform</b> — <b>Other (specify in description)</b>","URL и Description можно не заполнять","Нажмите <b>Create application</b>"],
+   tip:"<b>Выключите VPN</b> перед созданием приложения — с VPN Telegram выдаёт ошибку. Не используйте слово «Telegram» в названиях.", media:{type:"img",src:"img/wiz/3-4.png?v=5"}},
+  {t:"Перенесите ключи Telegram", p:"После создания откроется страница приложения. В блоке <b>Credentials</b> скопируйте два значения кнопками справа и вставьте их на вкладке со страницей установки, в блок «Ключи Telegram»:",
+   li:["<b>App api_id</b> (число) → поле <b>api_id</b>","<b>App api_hash</b> (длинная строка) → поле <b>api_hash</b>","Нажмите <b>Сохранить</b> — появится надпись «Сохранено ✓»"],
+   tip:"api_hash — секретный ключ, не пересылайте его. Красная надпись «Проверьте код приложения…» значит, что не вставлены код или ключ приложения из Битрикс24.", media:[{type:"img",src:"img/wiz/3-4b.png?v=5",cap:"1. Telegram — копируете"},{type:"img",src:"img/wiz/3-5.png?v=5",cap:"2. Страница установки — вставляете"}]}
+ ]},
+ {t:"Установка", d:"Ставим приложение на портал", s:[
+  {t:"Нажмите «Переустановить»", p:"Вернитесь в Битрикс24 к форме созданного приложения (<b>Разработчикам → Интеграции</b> → ваше приложение) и нажмите <b>Переустановить</b> под полями формы.",
+   tip:"Если нажали раньше, чем сохранили ключи на странице установки, — просто нажмите «Переустановить» ещё раз.", media:{type:"img",src:"img/wiz/4-1.png?v=5"}},
+  {t:"Проверьте результат", p:"Вернитесь на вкладку со страницей установки. Она сама увидит портал и покажет «✅ Готово — приложение установлено в ваш-портал.bitrix24.ru». Больше эту страницу открывать не нужно — нажмите <b>Открыть Битрикс24</b>.",
+   media:{type:"img",src:"img/wiz/4-2.png?v=5"}},
+  {t:"Откройте «Мессенджеры»", p:"В левом меню Битрикс24 появился пункт <b>Мессенджеры</b> (если не видно — загляните в «Ещё»). Быстрее всего — через поиск вверху: введите «месс» и выберите <b>Мессенджеры</b> в блоке «Пункты меню».",
+   media:{type:"img",src:"img/wiz/4-3.png?v=5"}},
+  {t:"Пробный период включился", p:"Откроется приложение. Сверху мелькнёт «Проверяем подписку…», а затем появится зелёная плашка <b>«Пробный период до …»</b> — 14 дней со всеми функциями. Теперь можно подключать мессенджеры: нажмите <b>+ Добавить номер</b>.",
+   media:{type:"img",src:"img/wiz/4-4.png?v=5"}},
+  {t:"Подключите прокси", p:"WhatsApp и Telegram лучше подключать через прокси — так номер реже попадает под блокировку. В приложении откройте <b>Настройки → Прокси</b> и выберите вариант:",
+   li:["<b>Proxy6</b> — подключается в один клик, оплата любой картой мира. Нажмите <b>Открыть Proxy6</b>, зарегистрируйтесь и пополните баланс, затем в разделе <a href='img/wiz/4-5a.png?v=7' class='wiz-zl'>Профиль → Разработчикам (API)</a> скопируйте <b>API KEY</b>, вставьте его в поле «Вставьте API-ключ» и нажмите <b>Подключить</b>","<b>Свой прокси</b> — «Добавить другой прокси»: адрес, логин и пароль от любого продавца"],
+   tip:"Страну прокси приложение подберёт само по номеру телефона. API-ключ Proxy6 — секретный, не пересылайте его. Max и WhatsApp Business прокси не нужен.",
+   media:{type:"img",src:"img/wiz/4-5b.png?v=6"}}
+ ]},
+ {t:"Номер и мессенджеры", d:"Подключаем телефон: прокси, WhatsApp, Telegram, Max и открытую линию", s:[
+  {t:"Добавьте номер и прокси", p:"На вкладке <b>Номера</b> нажмите <b>+ Добавить номер</b>. В форме «Новый номер» заполните:",
+   li:["<b>Название</b> — чтобы отличать номера, например «Продажи — Анна»","<b>Телефон</b> — номер, к которому привязаны мессенджеры","<b>Прокси</b> — добавьте сразу: <b>Купить в Proxy6</b> (выберите страну, срок и автопродление — приложение купит и подключит прокси само) или свой прокси строкой <code>адрес:порт:логин:пароль</code>"],
+   tip:"Нажмите <b>Сохранить и оплатить</b>. Прокси нужен WhatsApp и Telegram — он включится сам при их подключении; Max и WhatsApp Business прокси не нужен.",
+   media:{type:"img",src:"img/wiz/5-1.png?v=6"}},
+  {t:"Выберите ответственных", p:"Ответственные — сотрудники, которые могут писать клиентам с этого номера. В карточке номера нажмите <b>⚙ Настройки</b>, затем <b>+ Выбрать сотрудников</b>, отметьте нужных и нажмите <b>Сохранить</b>.",
+   tip:"Не выбрали никого — номер доступен всем сотрудникам. Здесь же можно поменять название и телефон номера.",
+   media:{type:"img",src:"img/wiz/5-2.png?v=6"}},
+  {t:"Подключите мессенджеры и открытую линию", p:"В карточке номера нажмите <b>+ WhatsApp</b>, <b>+ Telegram</b> или <b>+ Max</b> — появится QR-код. Отсканируйте его телефоном:",
+   li:["<b>WhatsApp:</b> Настройки → Связанные устройства → Привязка устройства","<b>Telegram:</b> Настройки → Устройства → Подключить устройство","<b>Max:</b> Профиль → Устройства → Войти по QR-коду (или по номеру телефона)","Затем в блоке <b>Открытая линия</b> выберите линию и нажмите <b>Подключить</b>"],
+   tip:"Код обновляется каждые 20–30 секунд. Для Telegram с облачным паролем приложение попросит его ввести. Повторите для каждого мессенджера — у каждого своя плитка в Контакт-центре.",
+   media:{type:"img",src:"img/wiz/5-3.png?v=5"}}
+ ]}
+];
+let wizS = 0, wizI = 0, wizDone = false;
+const WIZ_COPIED = new Set();
+const WIZ_PH = k => `<div class="wiz-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${k==="video"?'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/>':'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>'}</svg>${k==="video"?"Здесь будет видео":"Здесь будет скриншот"}</div>`;
+const WIZ_TOTAL = WIZ.reduce((a,x)=>a+x.s.length,0);
+function wizConfetti(cv){
+  if(!cv||matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const r=cv.parentElement.getBoundingClientRect(), dpr=devicePixelRatio||1, x=cv.getContext("2d");
+  cv.width=r.width*dpr; cv.height=r.height*dpr; x.scale(dpr,dpr);
+  const C=["#4FB247","#2AA3E0","#7B5CF5","#F09A1A","#E5463B","#2DB742","#F5C518"];
+  const P=Array.from({length:160},()=>({x:r.width/2+(Math.random()-.5)*120,y:r.height*.45,vx:(Math.random()-.5)*14,vy:-Math.random()*13-4,s:Math.random()*7+5,a:Math.random()*6,va:(Math.random()-.5)*.3,c:C[Math.random()*C.length|0]}));
+  let t=0;(function f(){ if(!cv.isConnected) return; x.clearRect(0,0,r.width,r.height);
+    P.forEach(p=>{p.vy+=.32;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-t/170);x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(++t<180) requestAnimationFrame(f); else x.clearRect(0,0,r.width,r.height); })();
+}
+function renderWiz(){
+  if(wizDone){
+    document.getElementById("wiz").innerHTML = `
+  <div class="wiz-secs" role="tablist" aria-label="Разделы установки">${WIZ.map((x,k)=>`<button type="button" class="done" data-s="${k}"><i>✓</i><span>${x.t}</span></button>`).join("")}</div>
+  <div class="wiz-top"><div class="wiz-bar"><i style="width:100%"></i></div><span>100% · ${WIZ_TOTAL} из ${WIZ_TOTAL}</span></div>
+  <div class="wiz-fin"><canvas class="wiz-conf" aria-hidden="true"></canvas>
+    <div class="wiz-fin-in"><div class="wiz-fin-ic">✓</div><h3>Настройка завершена!</h3>
+    <p>Мессенджеры подключены к Битрикс24. Напишите на подключённый номер с другого телефона — диалог появится в открытой линии.</p>
+    <p class="wiz-fin-s">Дальше можно настроить под себя: уведомления руководителю, лимиты новых контактов, вид кнопок в карточках, роботы в воронках.</p></div></div>
+  <div class="wiz-nav"><button type="button" class="back">← Назад</button><div class="wiz-hint"></div><button type="button" class="next restart">Начать сначала</button></div>`;
+    wizConfetti(document.querySelector("#wiz .wiz-conf"));
+    return;
+  }
+  const sec=WIZ[wizS], st=sec.s[wizI], ms=[].concat(st.media||{}), m=ms[0]||{};
+  const done = WIZ.slice(0,wizS).reduce((a,x)=>a+x.s.length,0)+wizI+1;
+  const last = wizS===WIZ.length-1 && wizI===sec.s.length-1, secEnd = wizI===sec.s.length-1;
+  const one = x => x.src ? (x.type==="video" ? `<video src="${x.src}" controls playsinline preload="metadata"></video>` : `<img src="${x.src}" alt="${x.cap||st.t}" loading="lazy">`) : WIZ_PH(x.type);
+  const media = ms.length>1 ? ms.map(x=>`<figure class="wiz-fig">${x.cap?`<figcaption>${x.cap}</figcaption>`:""}${one(x)}</figure>`).join("") : one(m);
+  const body = x => `<p>${x.p}</p>${x.li?`<ul>${x.li.map(y=>`<li>${y}</li>`).join("")}</ul>`:""}${x.cp?`<ul class="wiz-cpl">${x.cp.map(r=>{const c=r.match(/\((\w+)\)/)[1],d=WIZ_COPIED.has(c);return `<li class="${d?"done":""}"><span>${r}</span><button type="button" class="wiz-c1${d?" done":""}" data-copy="${c}">${d?"Скопировано ✓":"Копировать"}</button></li>`;}).join("")}</ul>`:""}${x.copy?`<button type="button" class="wiz-copy" data-copy="${x.copy}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Скопировать права</span></button><code class="wiz-cp">${x.copy}</code>`:""}${x.btn?`<a class="wiz-rw" href="${RAILWAY_URL}" target="_blank" rel="noopener">Deploy on Railway ↗</a>`:""}${x.tip?`<div class="wiz-tip">${x.tip}</div>`:""}`;
+  const nxt = last ? null : secEnd ? {k:`Раздел ${wizS+2}`, t:WIZ[wizS+1].t} : {k:`Шаг ${wizI+2}`, t:sec.s[wizI+1].t};
+  document.getElementById("wiz").innerHTML = `
+  <div class="wiz-secs" role="tablist" aria-label="Разделы установки">${WIZ.map((x,k)=>`<button type="button" class="${k===wizS?"on":k<wizS?"done":""}" data-s="${k}" ${k===wizS?'aria-current="step"':""}><i>${k<wizS?"✓":k+1}</i><span>${x.t}</span></button>`).join("")}</div>
+  <div class="wiz-top"><div class="wiz-dots" aria-label="Шаги раздела">${sec.s.map((x,k)=>`<button type="button" class="${k===wizI?"on":k<wizI?"done":""}" data-i="${k}" title="${x.t}" aria-label="Шаг ${k+1}: ${x.t}">${k<wizI?"✓":k+1}</button>`).join("")}</div><div class="wiz-bar"><i style="width:${done/WIZ_TOTAL*100}%"></i></div><span>${Math.round(done/WIZ_TOTAL*100)}% · ${done} из ${WIZ_TOTAL}</span></div>
+  <div class="wiz-body">
+    <div class="wiz-txt"><div class="wiz-k">${sec.t} · шаг ${wizI+1} из ${sec.s.length}</div><h3>${st.t}</h3><div class="wiz-d">${body(st)}</div></div>
+    <div class="wiz-media${ms.length>1?" multi":""}">${media}</div>
+  </div>
+  <div class="wiz-nav"><button type="button" class="back" ${wizS||wizI?"":"disabled"}>← Назад</button><div class="wiz-hint">${nxt?`Далее — ${nxt.k}: <b>${nxt.t}</b>`:"Последний шаг — дальше финиш"}</div><button type="button" class="next">${last?"Завершить ✓":"Далее →"}</button></div>`;
+}
+document.getElementById("wiz").addEventListener("click",e=>{
+  const zi=e.target.closest(".wiz-media img,.wiz-zl");
+  if(zi){e.preventDefault();const z=document.createElement("div");z.className="wiz-zoom";z.innerHTML=`<img src="${zi.getAttribute("src")||zi.getAttribute("href")}" alt="">`;const close=()=>{z.remove();document.removeEventListener("keydown",k);};const k=ev=>{if(ev.key==="Escape")close();};z.addEventListener("click",close);document.addEventListener("keydown",k);document.body.appendChild(z);return;}
+  const cp=e.target.closest(".wiz-copy,.wiz-c1");
+  if(cp){
+    const t=cp.dataset.copy, one=cp.classList.contains("wiz-c1"), lbl=cp.querySelector("span")||cp, was=lbl.textContent;
+    const ok=()=>{
+      if(one){WIZ_COPIED.add(t);cp.classList.add("done");cp.textContent="Скопировано ✓";cp.closest("li").classList.add("done");return;}
+      cp.classList.add("done");lbl.textContent="Скопировано ✓";clearTimeout(cp._t);cp._t=setTimeout(()=>{cp.classList.remove("done");lbl.textContent=was;},1800);
+    };
+    const fb=()=>{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();try{document.execCommand("copy");}catch(_){}a.remove();ok();};
+    if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(t).then(ok,fb); else fb();
+    return;
+  }
+  const sb=e.target.closest(".wiz-secs button"), ib=e.target.closest(".wiz-dots button"), b=e.target.closest(".wiz-nav button");
+  if(sb){wizDone=false;wizS=+sb.dataset.s;wizI=0;}
+  else if(ib) wizI=+ib.dataset.i;
+  else if(b&&wizDone&&b.classList.contains("back")){ wizDone=false; }
+  else if(b&&b.classList.contains("restart")){ wizDone=false;wizS=0;wizI=0; }
+  else if(b&&b.classList.contains("back")){ if(wizI>0) wizI--; else if(wizS>0){wizS--;wizI=WIZ[wizS].s.length-1;} }
+  else if(b&&b.classList.contains("next")){ if(wizI<WIZ[wizS].s.length-1) wizI++; else if(wizS<WIZ.length-1){wizS++;wizI=0;} else {wizDone=true;} }
+  else return;
+  renderWiz();
+  const nx=document.querySelector(".wiz-nav .next"); if(nx&&b) nx.focus({preventScroll:true});
+  const w=document.getElementById("wiz"), r=w.getBoundingClientRect(); if(r.top<60||r.bottom>innerHeight+2) w.scrollIntoView({behavior:"smooth",block:"center"});
+});
+renderWiz();
+
+/* ---------- навигация по разделам ---------- */
+const navLinks=[...document.querySelectorAll("nav.tabs a")];
+const spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>{if(a.getAttribute("href")==="#"+e.target.id)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});}});},{rootMargin:"-45% 0px -50% 0px"});
+["features","price","integrations"].forEach(id=>{const el=document.getElementById(id);if(el)spy.observe(el);});
+</script>
+</body>
+</html>
